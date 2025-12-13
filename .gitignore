@@ -1,0 +1,31 @@
+# Java
+*.class
+*.jar
+*.war
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Spring config files
+application.yml
+application.yaml
+
+# Tüm servislerin yml dosyaları
+**/application.yml
+**/application.yaml
