@@ -1,0 +1,11 @@
+server:
+  port: 8762   # rastgele port (microservice için doğru yaklaşım)
+
+spring:
+  application:
+    name: post-service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
