@@ -29,3 +29,11 @@ application.yaml
 # Tüm servislerin yml dosyaları
 **/application.yml
 **/application.yaml
+
+# IntelliJ / IDE build output
+out/
+**/out/
+
+# Eclipse bin output (varsa)
+bin/
+**/bin/
