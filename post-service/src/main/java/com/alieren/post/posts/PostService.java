@@ -3,6 +3,8 @@ package com.alieren.post.posts;
 import com.alieren.post.posts.dto.CreatePostRequest;
 import com.alieren.post.posts.dto.PostResponse;
 import org.springframework.stereotype.Service;
+import com.alieren.post.clients.UserServiceClient;
+
 
 import java.util.*;
 
@@ -12,11 +14,14 @@ public class PostService {
     private final PostRepository repo;
     private final PostLikeRepository likeRepo;
     private final PostCommentRepository commentRepo;
+    private final UserServiceClient userServiceClient;
 
-    public PostService(PostRepository repo, PostLikeRepository likeRepo, PostCommentRepository commentRepo) {
+    public PostService(PostRepository repo, PostLikeRepository likeRepo, PostCommentRepository commentRepo,
+                       UserServiceClient userServiceClient) {
         this.repo = repo;
         this.likeRepo = likeRepo;
         this.commentRepo = commentRepo;
+        this.userServiceClient = userServiceClient;
     }
 
     public PostResponse create(String authUserId, CreatePostRequest req) {
@@ -65,6 +70,16 @@ public class PostService {
         return map;
     }
 
+    public List<PostResponse> feed(String myId) {
+        List<String> followingIds = userServiceClient.getMyFollowingIds(myId);
+        if (followingIds == null || followingIds.isEmpty()) return List.of();
+
+        // İstersen kendi postlarını da feed’e kat:
+         followingIds = new ArrayList<>(followingIds); followingIds.add(myId);
+
+        List<Post> posts = repo.findByAuthUserIdInOrderByCreatedAtDesc(followingIds);
+        return mapWithCounts(posts); // senin yazdığımız count’lu mapper
+    }
     private PostResponse toResponse(Post p, long likeCount, long commentCount) {
         return new PostResponse(
                 p.getId(),

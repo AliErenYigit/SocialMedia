@@ -34,4 +34,12 @@ public class PostController {
     public List<PostResponse> listMine(@RequestHeader("X-User-Id") String userId) {
         return service.listMine(userId);
     }
+
+
+    @GetMapping("/feed")
+    public java.util.List<com.alieren.post.posts.dto.PostResponse> feed(
+            @RequestHeader("X-User-Id") String userId
+    ) {
+        return service.feed(userId);
+    }
 }

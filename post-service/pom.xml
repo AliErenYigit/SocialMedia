@@ -29,6 +29,10 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
+        </dependency>
         <!-- Validation (jakarta.validation.*) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -61,7 +65,10 @@
             <version>1.18.32</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
