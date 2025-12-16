@@ -1,12 +1,17 @@
 package com.alieren.post.posts;
 
+import com.alieren.post.kafka.NotificationEventProducer;
 import com.alieren.post.posts.dto.CommentResponse;
 import com.alieren.post.posts.dto.CreateCommentRequest;
 import com.alieren.post.posts.dto.LikeResponse;
+import com.alieren.shared.events.NotificationEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class PostInteractionService {
@@ -14,16 +19,22 @@ public class PostInteractionService {
     private final PostRepository postRepo;
     private final PostLikeRepository likeRepo;
     private final PostCommentRepository commentRepo;
+    private final NotificationEventProducer producer;
 
-    public PostInteractionService(PostRepository postRepo, PostLikeRepository likeRepo, PostCommentRepository commentRepo) {
+    public PostInteractionService(
+            PostRepository postRepo,
+            PostLikeRepository likeRepo,
+            PostCommentRepository commentRepo,
+            NotificationEventProducer producer
+    ) {
         this.postRepo = postRepo;
         this.likeRepo = likeRepo;
         this.commentRepo = commentRepo;
+        this.producer = producer;
     }
 
     @Transactional
     public LikeResponse toggleLike(Long postId, String authUserId) {
-        // Post var mı?
         Post post = postRepo.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
@@ -39,6 +50,21 @@ public class PostInteractionService {
                     .authUserId(authUserId)
                     .build());
             liked = true;
+
+            // ✅ event: POST_LIKED (sadece like eklenince)
+            // kendine bildirim gönderme
+            if (!authUserId.equals(post.getAuthUserId())) {
+                producer.publish(new NotificationEvent(
+                        UUID.randomUUID().toString(),
+                        "POST_LIKED",
+                        authUserId,                 // actor
+                        post.getAuthUserId(),       // target = post owner
+                        "POST",
+                        String.valueOf(postId),
+                        Instant.now(),
+                        Map.of("postId", postId)
+                ));
+            }
         }
 
         long likeCount = likeRepo.countByPostId(postId);
@@ -55,6 +81,23 @@ public class PostInteractionService {
                 .authUserId(authUserId)
                 .content(req.content())
                 .build());
+
+        // ✅ event: COMMENT_CREATED
+        if (!authUserId.equals(post.getAuthUserId())) {
+            producer.publish(new NotificationEvent(
+                    UUID.randomUUID().toString(),
+                    "COMMENT_CREATED",
+                    authUserId,
+                    post.getAuthUserId(),
+                    "POST",
+                    String.valueOf(postId),
+                    Instant.now(),
+                    Map.of(
+                            "postId", postId,
+                            "commentId", c.getId()
+                    )
+            ));
+        }
 
         return new CommentResponse(c.getId(), postId, c.getAuthUserId(), c.getContent(), c.getCreatedAt());
     }
