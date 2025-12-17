@@ -1,20 +1,40 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Card, Input, List, Space, Typography, message } from "antd";
 import { postsApi } from "../api/posts.api";
 
 export default function Home() {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
+
   const [posts, setPosts] = useState([]);
   const [content, setContent] = useState("");
 
   const load = async () => {
     try {
       setLoading(true);
+
+      // 1) önce feed listesi
       const res = await postsApi.list();
-      // backend bazen {content:[...]} / bazen direkt [...] döner
-      const data = res.data?.content ?? res.data;
-      setPosts(Array.isArray(data) ? data : []);
+      const arr = res.data?.content ?? res.data;
+      const list = Array.isArray(arr) ? arr : [];
+
+      // 2) her post için detail çek → username doldur
+      const detailed = await Promise.all(
+        list.map(async (p) => {
+          try {
+            const dres = await postsApi.detail(p.id);
+            const data = dres.data?.data ?? dres.data;
+            return { ...p, username: data?.username ?? "User" };
+          } catch {
+            return { ...p, username: "User" };
+          }
+        })
+      );
+
+      setPosts(detailed);
     } catch (e) {
       message.error(e?.response?.data?.message || "Posts yüklenemedi");
     } finally {
@@ -22,7 +42,9 @@ export default function Home() {
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   const createPost = async () => {
     if (!content.trim()) return message.warning("Post boş olamaz");
@@ -51,7 +73,9 @@ export default function Home() {
   return (
     <Space direction="vertical" style={{ width: "100%" }} size={16}>
       <Card>
-        <Typography.Title level={4} style={{ marginTop: 0 }}>Feed</Typography.Title>
+        <Typography.Title level={4} style={{ marginTop: 0 }}>
+          Feed
+        </Typography.Title>
 
         <Space.Compact style={{ width: "100%" }}>
           <Input
@@ -73,14 +97,30 @@ export default function Home() {
           renderItem={(item) => (
             <List.Item
               actions={[
+                <Button key="detail" onClick={() => navigate(`/posts/${item.id}`)}>
+                  Yorumlar
+                </Button>,
                 <Button key="like" onClick={() => likePost(item.id)}>
-                  Like {item.likeCount ?? ""}
+                  Like {item.likeCount ?? 0}
                 </Button>,
               ]}
             >
               <List.Item.Meta
-                title={item.user?.username || item.author?.username || "User"}
-                description={item.content || item.text}
+                title={
+                  <Space direction="vertical" size={0}>
+                    <span style={{ fontWeight: 600 }}>
+                      {item.username || "User"}
+                    </span>
+                    <span style={{ opacity: 0.6, fontSize: 12 }}>
+                      {item.createdAt ? new Date(item.createdAt).toLocaleString() : ""}
+                    </span>
+                  </Space>
+                }
+                description={
+                  <span style={{ cursor: "pointer" }} onClick={() => navigate(`/posts/${item.id}`)}>
+                    {item.content || ""}
+                  </span>
+                }
               />
             </List.Item>
           )}
