@@ -9,6 +9,7 @@ public record PostDetailResponse(
         String authUserId,
         String username,
         Instant createdAt,
+        boolean liked,
         long likeCount,
         List<CommentDetailResponse> comments
 ) {}

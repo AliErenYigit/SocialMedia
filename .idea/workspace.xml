@@ -5,118 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="102f3872-e92e-44a0-841f-e7406c65117f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/dto/CommentDetailResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/dto/PostDetailResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/dto/UserBatchRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/dto/UserSummaryResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/users/dto/UserBatchRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/users/dto/UserSummaryResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/java/com/alieren/api_gateway/ApiGatewayApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/java/com/alieren/api_gateway/security/GatewayJwtService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/java/com/alieren/api_gateway/security/JwtAuthFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/src/test/java/com/alieren/api_gateway/ApiGatewayApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/AuthServiceApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/config/SecurityBeansConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/config/SecurityConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/controller/AuthController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/dto/AuthResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/dto/LoginRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/dto/RegisterRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/jwt/JwtService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/service/AuthService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/user/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/alieren/auth/user/UserRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/test/java/com/alieren/auth/AuthServiceApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-service/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-service/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-service/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-service/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-service/src/main/java/com/alieren/discovery/DiscoveryServiceApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-service/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-service/src/test/java/com/alieren/discovery/DiscoveryServiceApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/infra/docker-compose.kafka.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/alieren/notification/NotificationServiceApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/alieren/notification/dto/NotificationResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/alieren/notification/kafka/NotificationEventConsumer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/alieren/notification/notifications/Notification.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/alieren/notification/notifications/NotificationController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/alieren/notification/notifications/NotificationRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/test/java/com/alieren/notification/NotificationServiceApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/social-media/com/alieren/discovery/DiscoveryServiceApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/PostServiceApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/clients/UserServiceClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/config/WebClientConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/kafka/NotificationEventProducer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/Post.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/PostComment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/PostCommentRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/PostController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/PostInteractionController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/PostInteractionService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/PostLike.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/PostLikeRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/PostRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/PostService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/dto/CommentResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/dto/CreateCommentRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/dto/CreatePostRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/dto/LikeResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/java/com/alieren/post/posts/dto/PostResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/post-service/src/test/java/com/alieren/post/PostServiceApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shared/src/main/java/com/alieren/shared/events/NotificationEvent.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/UserServiceApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/follow/Follow.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/follow/FollowController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/follow/FollowRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/follow/FollowService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/kafka/NotificationEventProducer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/users/UserController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/users/UserProfile.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/users/UserProfileRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/users/UserProfileService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/users/dto/UpdateMeRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alieren/user/users/dto/UserProfileResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/test/java/com/alieren/user/UserServiceApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostLikeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostLikeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/dto/PostDetailResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/dto/PostDetailResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/Home.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/pages/Home.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/PostDetail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/pages/PostDetail.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -162,7 +58,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/notification&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/userPost&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/alier/java projelerisii/SocialMedia&quot;,
@@ -178,12 +74,12 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.PostServiceApplication">
-    <configuration name="AuthServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.alieren.auth.AuthServiceApplication" />
-      <module name="auth-service" />
+    <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.alieren.api_gateway.ApiGatewayApplication" />
+      <module name="api-gateway" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.alieren.auth.*" />
+          <option name="PATTERN" value="com.alieren.api_gateway.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -191,12 +87,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DiscoveryServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.alieren.discovery.DiscoveryServiceApplication" />
-      <module name="discovery-service" />
+    <configuration name="AuthServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.alieren.auth.AuthServiceApplication" />
+      <module name="auth-service" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.alieren.discovery.*" />
+          <option name="PATTERN" value="com.alieren.auth.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -257,10 +153,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.PostServiceApplication" />
-        <item itemvalue="Application.UserServiceApplication" />
-        <item itemvalue="Application.AuthServiceApplication" />
         <item itemvalue="Application.NotificationServiceApplication" />
-        <item itemvalue="Application.DiscoveryServiceApplication" />
+        <item itemvalue="Application.AuthServiceApplication" />
+        <item itemvalue="Application.ApiGatewayApplication" />
+        <item itemvalue="Application.UserServiceApplication" />
       </list>
     </recent_temporary>
   </component>

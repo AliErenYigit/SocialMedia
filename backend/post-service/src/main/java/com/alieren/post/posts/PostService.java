@@ -90,10 +90,10 @@ public class PostService {
             return null;
         }
     }
-    public PostDetailResponse getPostDetail(Long id,String authHeader) {
+    public PostDetailResponse getPostDetail(Long id,String authUserId,String authHeader) {
         var post = repo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found: " + id));
-
+        boolean liked = likeRepo.existsByPostIdAndAuthUserId(id, authUserId);
         // userId’leri topla
         List<Long> ids = new ArrayList<>();
 
@@ -137,6 +137,7 @@ public class PostService {
                 post.getAuthUserId(),
                 postUsername,
                 post.getCreatedAt(),
+                liked,
                 likeCount,
                 comments
         );

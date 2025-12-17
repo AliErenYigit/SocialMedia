@@ -44,7 +44,12 @@ public class PostController {
         return service.feed(userId);
     }
     @GetMapping("/{id}")
-    public PostDetailResponse getPostById(@PathVariable Long id,@RequestHeader(value = "Authorization", required = false) String authHeader) {
-        return service.getPostDetail(id,authHeader);
+    public PostDetailResponse detail(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String authHeader,
+            @RequestHeader("X-User-Id") String authUserId
+    ) {
+        return service.getPostDetail(id, authUserId, authHeader);
     }
+
 }
