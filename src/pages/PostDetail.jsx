@@ -10,9 +10,10 @@ export default function PostDetail() {
   const [post, setPost] = useState(null);
 
   const [comments, setComments] = useState([]);
-
   const [commentText, setCommentText] = useState("");
   const [sending, setSending] = useState(false);
+
+  const [liking, setLiking] = useState(false);
 
   const load = async () => {
     try {
@@ -20,7 +21,12 @@ export default function PostDetail() {
       const res = await postsApi.detail(id);
       const data = res.data?.data ?? res.data;
 
-      setPost(data);
+      // backend: liked + likeCount geliyor varsayıyoruz
+      setPost({
+        ...data,
+        liked: data?.liked ?? false,
+        likeCount: data?.likeCount ?? 0,
+      });
 
       const embeddedComments = data?.comments ?? data?.commentList ?? [];
       setComments(Array.isArray(embeddedComments) ? embeddedComments : []);
@@ -33,14 +39,41 @@ export default function PostDetail() {
 
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const likePost = async () => {
+    if (liking) return;
+
+    // optimistic toggle
+    const prev = post;
+    setPost((p) => {
+      if (!p) return p;
+      const nextLiked = !p.liked;
+      const nextCount = (p.likeCount ?? 0) + (nextLiked ? 1 : -1);
+      return { ...p, liked: nextLiked, likeCount: Math.max(0, nextCount) };
+    });
+
+    setLiking(true);
     try {
-      await postsApi.like(id);
-      load();
+      const res = await postsApi.like(id); // toggle
+      const data = res.data?.data ?? res.data; // { postId, liked, likeCount }
+
+      // response ile senkronla (homepage mantığı)
+      setPost((p) => {
+        if (!p) return p;
+        return {
+          ...p,
+          liked: data?.liked ?? p.liked,
+          likeCount: data?.likeCount ?? p.likeCount,
+        };
+      });
     } catch (e) {
+      // rollback
+      setPost(prev);
       message.error(e?.response?.data?.message || "Like başarısız");
+    } finally {
+      setLiking(false);
     }
   };
 
@@ -66,19 +99,18 @@ export default function PostDetail() {
           Post Detail
         </Typography.Title>
 
-        <div style={{ opacity: 0.7, marginBottom: 6 }}>
-          {post?.username || "User"}
-        </div>
-
-        <div style={{ fontSize: 16 }}>
-          {post?.content || ""}
-        </div>
+        <div style={{ opacity: 0.7, marginBottom: 6 }}>{post?.username || "User"}</div>
+        <div style={{ fontSize: 16 }}>{post?.content || ""}</div>
 
         <Divider />
 
         <Space>
-          <Button onClick={likePost}>
-            Like {post?.likeCount ?? 0}
+          <Button
+            type={post?.liked ? "primary" : "default"}
+            onClick={likePost}
+            loading={liking}
+          >
+            {post?.liked ? "Liked" : "Like"} {post?.likeCount ?? 0}
           </Button>
         </Space>
       </Card>

@@ -27,9 +27,20 @@ export default function Home() {
           try {
             const dres = await postsApi.detail(p.id);
             const data = dres.data?.data ?? dres.data;
-            return { ...p, username: data?.username ?? "User" };
+
+            return {
+              ...p,
+              username: data?.username ?? "User",
+              liked: data?.liked ?? p?.liked ?? false,
+              likeCount: data?.likeCount ?? p?.likeCount ?? 0,
+            };
           } catch {
-            return { ...p, username: "User" };
+            return {
+              ...p,
+              username: "User",
+              liked: p?.liked ?? false,
+              likeCount: p?.likeCount ?? 0,
+            };
           }
         })
       );
@@ -63,8 +74,22 @@ export default function Home() {
 
   const likePost = async (postId) => {
     try {
-      await postsApi.like(postId);
-      load();
+      const res = await postsApi.like(postId);
+
+      const data = res.data?.data ?? res.data; // sende nasıl dönüyorsa
+      // data: { postId, liked, likeCount }
+
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id !== postId
+            ? p
+            : {
+                ...p,
+                liked: data?.liked ?? !p.liked, // fallback
+                likeCount: data?.likeCount ?? p.likeCount,
+              }
+        )
+      );
     } catch (e) {
       message.error(e?.response?.data?.message || "Like başarısız");
     }
@@ -97,10 +122,17 @@ export default function Home() {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button key="detail" onClick={() => navigate(`/posts/${item.id}`)}>
+                <Button
+                  key="detail"
+                  onClick={() => navigate(`/posts/${item.id}`)}
+                >
                   Yorumlar
                 </Button>,
-                <Button key="like" onClick={() => likePost(item.id)}>
+                <Button
+                  key="like"
+                  type={item.liked ? "primary" : "default"}
+                  onClick={() => likePost(item.id)}
+                >
                   Like {item.likeCount ?? 0}
                 </Button>,
               ]}
@@ -112,12 +144,17 @@ export default function Home() {
                       {item.username || "User"}
                     </span>
                     <span style={{ opacity: 0.6, fontSize: 12 }}>
-                      {item.createdAt ? new Date(item.createdAt).toLocaleString() : ""}
+                      {item.createdAt
+                        ? new Date(item.createdAt).toLocaleString()
+                        : ""}
                     </span>
                   </Space>
                 }
                 description={
-                  <span style={{ cursor: "pointer" }} onClick={() => navigate(`/posts/${item.id}`)}>
+                  <span
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/posts/${item.id}`)}
+                  >
                     {item.content || ""}
                   </span>
                 }
