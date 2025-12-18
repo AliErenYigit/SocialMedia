@@ -6,8 +6,9 @@ public record NotificationResponse(
         Long id,
         String type,
         String actorUserId,
-        String entityType,
-        String entityId,
+        String username,   // ✅ eklendi
+        String entityId,        // ✅ entityType kaldırmak için sadece entityId tut
         Instant createdAt,
-        boolean read
+        boolean read,
+        String message
 ) {}

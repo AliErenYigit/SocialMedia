@@ -30,7 +30,10 @@ public class UserProfileService {
 
     public UserProfileResponse updateMe(String authUserId, UpdateMeRequest req) {
         UserProfile p = repo.findByAuthUserId(authUserId)
-                .orElseThrow(() -> new RuntimeException("Profile not found"));
+                .orElseGet(() -> UserProfile.builder()
+                        .authUserId(authUserId)
+                        .build()
+                );
 
         if (req.username() != null) p.setUsername(req.username());
         if (req.bio() != null) p.setBio(req.bio());

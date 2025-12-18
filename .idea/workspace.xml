@@ -5,14 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="102f3872-e92e-44a0-841f-e7406c65117f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/clients/UserServiceClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/config/WebClientConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/dto/UserBatchRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/dto/UserSummaryResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostLikeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostLikeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/dto/PostDetailResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/dto/PostDetailResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/notification-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/notification-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/dto/NotificationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/dto/NotificationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/notifications/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/notifications/NotificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/users/UserProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/users/UserProfileService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/Home.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/pages/Home.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/PostDetail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/pages/PostDetail.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/src/app/AppLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/app/AppLayout.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/src/app/router.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/app/router.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +77,7 @@
       <recent name="C:\Users\alier\java projelerisii\SocialMedia\user-service\src\main\java\com\alieren\user\users" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.PostServiceApplication">
+  <component name="RunManager" selected="Application.NotificationServiceApplication">
     <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.alieren.api_gateway.ApiGatewayApplication" />
       <module name="api-gateway" />
@@ -152,11 +156,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.PostServiceApplication" />
         <item itemvalue="Application.NotificationServiceApplication" />
-        <item itemvalue="Application.AuthServiceApplication" />
-        <item itemvalue="Application.ApiGatewayApplication" />
         <item itemvalue="Application.UserServiceApplication" />
+        <item itemvalue="Application.ApiGatewayApplication" />
+        <item itemvalue="Application.PostServiceApplication" />
+        <item itemvalue="Application.AuthServiceApplication" />
       </list>
     </recent_temporary>
   </component>
