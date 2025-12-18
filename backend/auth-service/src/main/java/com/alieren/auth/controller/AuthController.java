@@ -2,6 +2,7 @@ package com.alieren.auth.controller;
 
 import com.alieren.auth.dto.AuthResponse;
 import com.alieren.auth.dto.LoginRequest;
+import com.alieren.auth.dto.UserResponse;
 import com.alieren.auth.dto.RegisterRequest;
 import com.alieren.auth.service.AuthService;
 import jakarta.validation.Valid;
@@ -27,4 +28,11 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest req) {
         return ResponseEntity.ok(authService.login(req));
     }
+
+    // 🔒 sadece giriş yapmış kullanıcı
+    @GetMapping("/users/{id}")
+    public UserResponse getUserById(@PathVariable Long id) {
+        return authService.getUserById(id);
+    }
+
 }

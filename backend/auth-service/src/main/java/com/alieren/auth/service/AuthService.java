@@ -2,6 +2,7 @@ package com.alieren.auth.service;
 
 import com.alieren.auth.dto.AuthResponse;
 import com.alieren.auth.dto.LoginRequest;
+import com.alieren.auth.dto.UserResponse;
 import com.alieren.auth.dto.RegisterRequest;
 import com.alieren.auth.jwt.JwtService;
 import com.alieren.auth.user.User;
@@ -47,5 +48,15 @@ public class AuthService {
 
         String token = jwtService.generateAccessToken(user.getId(), user.getEmail());
         return new AuthResponse(token, "Bearer", user.getId(), user.getEmail(), user.getUsername());
+    }
+    public UserResponse getUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return new UserResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getUsername()
+        );
     }
 }

@@ -33,4 +33,14 @@ public class FollowController {
     public List<String> myFollowingIds(@RequestHeader("X-User-Id") String me) {
         return service.getFollowingIds(me);
     }
+
+    @GetMapping("/{userId}/followers-count")
+    public long followersCount(@PathVariable String userId) {
+        return service.getFollowersCount(userId);
+    }
+
+    @GetMapping("/{userId}/following-count")
+    public long followingCount(@PathVariable String userId) {
+        return service.getFollowingCount(userId);
+    }
 }

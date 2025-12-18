@@ -8,5 +8,6 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     boolean existsByFollowerAuthUserIdAndFollowingAuthUserId(String follower, String following);
     void deleteByFollowerAuthUserIdAndFollowingAuthUserId(String follower, String following);
     List<Follow> findByFollowerAuthUserId(String follower);
-    long countByFollowerAuthUserId(String follower);
+    long countByFollowingAuthUserId(String followingAuthUserId); // followers count (beni takip edenler)
+    long countByFollowerAuthUserId(String followerAuthUserId);
 }

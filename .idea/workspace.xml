@@ -5,17 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="102f3872-e92e-44a0-841f-e7406c65117f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/clients/UserServiceClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/config/WebClientConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/dto/UserBatchRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/dto/UserSummaryResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/auth-service/src/main/java/com/alieren/auth/dto/UserResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/users/dto/UserProfileCountResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/notification-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/notification-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/dto/NotificationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/dto/NotificationResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/notifications/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/notification-service/src/main/java/com/alieren/notification/notifications/NotificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/auth-service/src/main/java/com/alieren/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/auth-service/src/main/java/com/alieren/auth/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/auth-service/src/main/java/com/alieren/auth/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/auth-service/src/main/java/com/alieren/auth/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/users/UserProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/users/UserProfileService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/app/AppLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/app/AppLayout.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend/src/app/router.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/app/router.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -77,7 +76,7 @@
       <recent name="C:\Users\alier\java projelerisii\SocialMedia\user-service\src\main\java\com\alieren\user\users" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.NotificationServiceApplication">
+  <component name="RunManager" selected="Application.UserServiceApplication">
     <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.alieren.api_gateway.ApiGatewayApplication" />
       <module name="api-gateway" />
@@ -104,12 +103,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="NotificationServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.alieren.notification.NotificationServiceApplication" />
-      <module name="notification-service" />
+    <configuration name="DiscoveryServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.alieren.discovery.DiscoveryServiceApplication" />
+      <module name="discovery-service" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.alieren.notification.*" />
+          <option name="PATTERN" value="com.alieren.discovery.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -156,11 +155,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.NotificationServiceApplication" />
         <item itemvalue="Application.UserServiceApplication" />
-        <item itemvalue="Application.ApiGatewayApplication" />
-        <item itemvalue="Application.PostServiceApplication" />
         <item itemvalue="Application.AuthServiceApplication" />
+        <item itemvalue="Application.DiscoveryServiceApplication" />
+        <item itemvalue="Application.PostServiceApplication" />
+        <item itemvalue="Application.ApiGatewayApplication" />
       </list>
     </recent_temporary>
   </component>
