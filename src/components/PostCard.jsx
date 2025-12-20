@@ -11,45 +11,39 @@ export default function PostCard({ post, onLike, onOpen }) {
   const likeCount = post.likeCount ?? 0;
   const commentCount = post.commentCount ?? 0;
 
+  // backend bazen "ImageUrl" döndürüyor
+  const imageUrl = post.imageUrl ?? post.ImageUrl ?? null;
+
+  const openDetail = () => onOpen?.(post.id);
+
   return (
-    <Card style={{ borderRadius: 12 }} bodyStyle={{ padding: 25 }} hoverable>
+    <Card
+      style={{ borderRadius: 12 }}
+      bodyStyle={{ padding: 25 }}
+      hoverable
+      onClick={openDetail} // ✅ artık her yer tıklanınca detail açılır
+    >
       {/* header */}
       <Space
         align="center"
         style={{ width: "100%", justifyContent: "space-between" }}
       >
-        <Space align="center">
-          <Avatar size={47}>
-            {(post.username ?? "U").charAt(0).toUpperCase()}
+        <Space align="center" onClick={(e) => e.stopPropagation()}>
+          {/* ✅ avatar */}
+          <Avatar size={47} src={post.avatarUrl || undefined}>
+            {!post.avatarUrl && (post.username ?? "U").charAt(0).toUpperCase()}
           </Avatar>
 
           <div>
-            <Typography.Text
-              strong
-              style={{ display: "block", lineHeight: 1.2 }}
-            ></Typography.Text>
-
-            <Space size={220} style={{ marginTop: -2 }}>
-              <Typography.Text
-                type="secondary"
-                style={{ fontSize: 20 }}
-              >
-                <span
-                  style={{
-                    color: "#000", // ✅ siyah
-                    fontWeight: 500, // biraz güçlü dursun
-                  }}
-                >
-                  {post.username ?? "User"}
-                </span>
+            <Space size={10} align="center">
+              <Typography.Text style={{ fontSize: 16, fontWeight: 600, color: "#000" }}>
+                {post.username ?? "User"}
               </Typography.Text>
-              <Typography.Text type="secondary" style={{ fontSize: 12 ,marginTop: -2}}>
+              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
                 •
               </Typography.Text>
-              <Typography.Text type="secondary" style={{ color: "#000",fontSize: 12,fontWeight:500, marginTop: -2 }}>
-                {post.createdAt
-                  ? new Date(post.createdAt).toLocaleString()
-                  : ""}
+              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                {post.createdAt ? new Date(post.createdAt).toLocaleString() : ""}
               </Typography.Text>
             </Space>
           </div>
@@ -57,29 +51,44 @@ export default function PostCard({ post, onLike, onOpen }) {
       </Space>
 
       {/* content */}
-      <div style={{ marginTop: 10 }}>
-        <Typography.Text style={{ fontSize: 17 }}>
-          {post.content ?? ""}
-        </Typography.Text>
-      </div>
+      {post.content ? (
+        <div    style={{
+              width: "680px",
+              height: "auto",
+              maxHeight: 320,
+              objectFit: "cover",
+              display: "block",
+            }}>
+          <Typography.Text style={{ fontSize: 17 }}>
+            {post.content}
+          </Typography.Text>
+        </div>
+      ) : null}
 
-      {/* image placeholder (sonra bağlanacak) */}
-      <div
-        style={{
-          marginTop: 12,
-          borderRadius: 12,
-          overflow: "hidden",
-          background: "rgba(0,0,0,0.04)",
-          height: 220,
-          display: "grid",
-          placeItems: "center",
-          cursor: "pointer",
-        }}
-        onClick={() => onOpen?.(post.id)}
-        title="Post detail"
-      >
-        <Typography.Text type="secondary">Image placeholder</Typography.Text>
-      </div>
+      {/* ✅ image only if exists */}
+      {imageUrl ? (
+        <div
+          style={{
+            marginTop: 12,
+            borderRadius: 12,
+            overflow: "hidden",
+            background: "rgba(0,0,0,0.04)",
+          }}
+          onClick={(e) => e.stopPropagation()} // resim tıklanırsa da sorun yok
+        >
+          <img
+            src={imageUrl}
+            alt="post"
+           style={{
+              width: "680px",
+              height: "auto",
+              maxHeight: 320,
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        </div>
+      ) : null}
 
       {/* footer actions */}
       <Space
@@ -88,17 +97,17 @@ export default function PostCard({ post, onLike, onOpen }) {
           justifyContent: "space-between",
           marginTop: 12,
         }}
+        onClick={(e) => e.stopPropagation()} // ✅ butonlara basınca card click çalışmasın
       >
-        <Space size={27}>
+        <Space size={18}>
           <Button
             type="text"
             icon={liked ? <HeartFilled /> : <HeartOutlined />}
             onClick={() => onLike?.(post.id)}
             style={{
-              padding: 15,
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: 600,
-              color: liked ? "#1677ff" : undefined, // ant primary hissi
+              color: liked ? "#1677ff" : undefined,
             }}
           >
             {likeCount}
@@ -107,18 +116,17 @@ export default function PostCard({ post, onLike, onOpen }) {
           <Button
             type="text"
             icon={<MessageOutlined />}
-            onClick={() => onOpen?.(post.id)}
-            style={{ padding: 0, fontSize: 20, fontWeight: 600 }}
+            onClick={openDetail} // ✅ yorum butonu da detail açsın
+            style={{ fontSize: 18, fontWeight: 600 }}
           >
             {commentCount}
           </Button>
         </Space>
 
-        {/* Save placeholder */}
         <Button
           type="text"
           icon={<BookOutlined />}
-          style={{ padding: 0, fontSize: 20, fontWeight: 600 }}
+          style={{ fontSize: 16, fontWeight: 600 }}
         >
           Kaydet
         </Button>

@@ -1,76 +1,44 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Avatar,
   Button,
   Card,
-  Divider,
   Input,
   Layout,
   List,
   Space,
   Typography,
   message,
+  Upload,
 } from "antd";
-import {
-  HomeOutlined,
-  MessageOutlined,
-  UserOutlined,
-  TeamOutlined,
-  VideoCameraOutlined,
-  ShopOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
+
 import { postsApi } from "../api/posts.api";
+import { userApi } from "../api/user.api";
 import NotificationsWidget from "../components/NotificationsWidget";
 import PostCard from "../components/PostCard";
 
 const { Sider, Content } = Layout;
+const { TextArea } = Input;
 
-const menuItems = [
-  { key: "home", label: "Home", icon: <HomeOutlined />, path: "/" },
-  { key: "chat", label: "Chat", icon: <MessageOutlined />, path: "/chat/:conversationId" },
-  {
-    key: "profile",
-    label: "Profile",
-    icon: <UserOutlined />,
-    path: "/profile",
-  },
-  {
-    key: "friends",
-    label: "Friends",
-    icon: <TeamOutlined />,
-    path: "/friends",
-  },
-  {
-    key: "videos",
-    label: "Videos",
-    icon: <VideoCameraOutlined />,
-    path: "/videos",
-  },
-  {
-    key: "market",
-    label: "Marketplace",
-    icon: <ShopOutlined />,
-    path: "/market",
-  },
-  {
-    key: "settings",
-    label: "Setting & Privacy",
-    icon: <SettingOutlined />,
-    path: "/settings",
-  },
-];
+const IMAGE_PUBLIC_BASE = "http://localhost:8087";
 
-// şimdilik fake friends — sonra backend bağlarız
-const mockFriends = [
-  { id: 1, name: "Emily" },
-  { id: 2, name: "Fiona" },
-  { id: 3, name: "Jennifer" },
-  { id: 4, name: "Anne" },
-  { id: 5, name: "Andrew" },
-  { id: 6, name: "Sonia" },
-];
+function normalizeAvatarUrl(url) {
+  if (!url || typeof url !== "string") return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://"))
+    return trimmed;
+  if (trimmed.startsWith("/")) return `${IMAGE_PUBLIC_BASE}${trimmed}`;
+  return `${IMAGE_PUBLIC_BASE}/${trimmed}`;
+}
+
+function pickAuthorId(p) {
+  return (
+    p.userId ?? p.authorId ?? p.ownerId ?? p.authUserId ?? p.createdBy ?? null
+  );
+}
 
 export default function Home() {
   const navigate = useNavigate();
@@ -79,35 +47,98 @@ export default function Home() {
   const [creating, setCreating] = useState(false);
 
   const [posts, setPosts] = useState([]);
+
+  // composer
   const [content, setContent] = useState("");
+  const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [showMedia, setShowMedia] = useState(false);
+
+  // ✅ cleanup preview url
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  const removeFile = () => {
+    setFile(null);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+  };
+
+  const onPickFile = (info) => {
+    const picked = info?.file?.originFileObj || info?.file;
+    if (!picked) return;
+
+    // bazı antd versiyonlarında file objesi farklı gelebiliyor
+    const realFile =
+      picked instanceof File ? picked : picked?.originFileObj || null;
+    const f = realFile || picked;
+    if (!f) return;
+
+    setFile(f);
+    setShowMedia(true); // ✅ dosya seçilince medya alanı otomatik açık kalsın
+
+    // eski preview temizle
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+
+    if (f.type?.startsWith("image/")) {
+      setPreviewUrl(URL.createObjectURL(f));
+    } else {
+      setPreviewUrl(null);
+    }
+  };
 
   const load = async () => {
     try {
       setLoading(true);
 
-      // 1) feed listesi
       const res = await postsApi.list();
       const arr = res.data?.content ?? res.data;
       const list = Array.isArray(arr) ? arr : [];
 
-      // 2) detail ile username doldur
-      const detailed = await Promise.all(
-        list.map(async (p) => {
-          try {
-            const dres = await postsApi.detail(p.id);
-            const data = dres.data?.data ?? dres.data;
-            return {
-              ...p,
-              username: data?.username ?? "User",
-              likedByMe: data?.liked ?? data?.likedByMe,
-            };
-          } catch {
-            return { ...p, username: "User" };
-          }
+      const basePosts = list.map((p) => ({
+        ...p,
+        authorId: pickAuthorId(p),
+        imageUrl: p.imageUrl ?? p.ImageUrl ?? null, // ✅ normalize
+      }));
+      const uniqIds = Array.from(
+        new Set(
+          basePosts
+            .map((p) => Number(p.authorId))
+            .filter(
+              (id) => id !== null && id !== undefined && !Number.isNaN(id)
+            )
+        )
+      );
+
+      const profileMap = new Map();
+
+      await Promise.allSettled(
+        uniqIds.map(async (id) => {
+          const pres = await userApi.getProfileById(id);
+          const data = pres?.data?.data ?? pres?.data ?? pres;
+
+          profileMap.set(id, {
+            username: data?.username ?? `user_${id}`,
+            avatarUrl: normalizeAvatarUrl(data?.avatarUrl),
+          });
         })
       );
 
-      setPosts(detailed);
+      const enriched = basePosts.map((p) => {
+        const id = Number(p.authorId);
+        const prof = profileMap.get(id);
+
+        return {
+          ...p,
+          username: prof?.username ?? p.username ?? "User",
+          avatarUrl: prof?.avatarUrl ?? null,
+        };
+      });
+
+      setPosts(enriched);
     } catch (e) {
       message.error(e?.response?.data?.message || "Posts yüklenemedi");
     } finally {
@@ -117,14 +148,34 @@ export default function Home() {
 
   useEffect(() => {
     load();
+    
   }, []);
 
   const createPost = async () => {
-    if (!content.trim()) return message.warning("Post boş olamaz");
+    const hasText = !!content.trim();
+    const hasFile = !!file;
+
+    if (!hasText && !hasFile) {
+      return message.warning("Paylaşım boş olamaz");
+    }
+
     try {
       setCreating(true);
-      await postsApi.create({ content });
+
+      if (hasFile) {
+        const formData = new FormData();
+        formData.append("content", content || "");
+        formData.append("file", file);
+        await postsApi.createWithFile(formData);
+      } else {
+        await postsApi.create({ content });
+      }
+
+      // ✅ reset composer
       setContent("");
+      removeFile();
+      setShowMedia(false);
+
       message.success("Post paylaşıldı");
       load();
     } catch (e) {
@@ -135,7 +186,6 @@ export default function Home() {
   };
 
   const likePost = async (postId) => {
-    // küçük optimistic
     setPosts((prev) =>
       prev.map((p) => {
         if (p.id !== postId) return p;
@@ -153,100 +203,119 @@ export default function Home() {
       await postsApi.like(postId);
     } catch (e) {
       message.error(e?.response?.data?.message || "Like başarısız");
-      load(); // rollback
+      load();
     }
   };
 
-  const sidebar = useMemo(() => {
+  const uploadHint = useMemo(() => {
+    if (!showMedia) return null;
+    if (file) return null;
     return (
-      <div style={{ padding: 16 }}>
-        <Typography.Title level={4} style={{ margin: 0 }}>
-          Social
-        </Typography.Title>
-
-        <Divider style={{ margin: "12px 0" }} />
-
-        <Space direction="vertical" style={{ width: "100%" }} size={4}>
-          {menuItems.map((m) => (
-            <Button
-              key={m.key}
-              type="text"
-              icon={m.icon}
-              onClick={() => navigate(m.path)}
-              style={{
-                width: "100%",
-                justifyContent: "flex-start",
-                borderRadius: 10,
-                padding: "8px 10px",
-              }}
-            >
-              {m.label}
-            </Button>
-          ))}
-        </Space>
-
-        <Divider style={{ margin: "16px 0 10px" }} />
-
-        <Space style={{ width: "100%", justifyContent: "space-between" }}>
-          <Typography.Text strong>Friends</Typography.Text>
-          <Button type="link" size="small" onClick={() => navigate("/friends")}>
-            →
-          </Button>
-        </Space>
-
-        <div style={{ marginTop: 8 }}>
-          <List
-            dataSource={mockFriends}
-            renderItem={(f) => (
-              <List.Item style={{ padding: "10px 0" }}>
-                <Space>
-                  <Avatar icon={<UserOutlined />} />
-                  <Typography.Text>{f.name}</Typography.Text>
-                </Space>
-              </List.Item>
-            )}
-          />
-        </div>
-      </div>
+      <Typography.Text
+        type="secondary"
+        style={{ display: "block", marginTop: 10 }}
+      >
+        İstersen bir resim veya belge ekleyebilirsin.
+      </Typography.Text>
     );
-  }, [navigate]);
+  }, [showMedia, file]);
 
   return (
     <Layout style={{ background: "#f5f7fb", minHeight: "calc(100vh - 64px)" }}>
-      {/* Sol: Sidebar + Friends */}
-      <Sider
-        width={280}
-        theme="light"
-        style={{
-          borderRight: "1px solid rgba(0,0,0,0.06)",
-          background: "#fff",
-        }}
-      >
-        {sidebar}
-      </Sider>
-
-      {/* Orta: Home Feed */}
       <Content style={{ padding: 20 }}>
         <div style={{ maxWidth: 780, margin: "0 auto" }}>
           <Typography.Title level={4} style={{ marginTop: 0 }}>
             Home
           </Typography.Title>
 
+          {/* ✅ Composer */}
           <Card style={{ borderRadius: 14 }}>
-            <Space.Compact style={{ width: "100%" }}>
-              <Input
+            <Space direction="vertical" style={{ width: "100%" }} size={12}>
+              <TextArea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Ne düşünüyorsun?"
+                autoSize={{ minRows: 2, maxRows: 6 }}
               />
-              <Button type="primary" loading={creating} onClick={createPost}>
-                Paylaş
-              </Button>
-            </Space.Compact>
+
+              {/* ✅ actions row */}
+              <Space style={{ width: "100%", justifyContent: "space-between" }}>
+                <Space>
+                  <Button
+                    icon={<UploadOutlined />}
+                    onClick={() => setShowMedia((p) => !p)}
+                  >
+                    Medya ekle
+                  </Button>
+
+                  {file ? (
+                    <Button
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={removeFile}
+                    >
+                      Kaldır
+                    </Button>
+                  ) : null}
+                </Space>
+
+                <Button type="primary" loading={creating} onClick={createPost}>
+                  Paylaş
+                </Button>
+              </Space>
+
+              {/* ✅ media area (default hidden) */}
+              {showMedia ? (
+                <div
+                  style={{
+                    border: "1px dashed #d9d9d9",
+                    borderRadius: 12,
+                    padding: 12,
+                    background: "#fafafa",
+                  }}
+                >
+                  <Upload
+                    accept="image/*,.pdf,.doc,.docx"
+                    maxCount={1}
+                    beforeUpload={() => false}
+                    showUploadList={false}
+                    onChange={onPickFile}
+                  >
+                    <Button icon={<UploadOutlined />}>Resim / Dosya seç</Button>
+                  </Upload>
+
+                  {/* preview */}
+                  {file ? (
+                    <div style={{ marginTop: 12 }}>
+                      {previewUrl ? (
+                        <img
+                          src={previewUrl}
+                          alt="preview"
+                          style={{
+                            width: "100%",
+                            maxHeight: 320,
+                            objectFit: "cover",
+                            borderRadius: 12,
+                            display: "block",
+                          }}
+                        />
+                      ) : (
+                        <Typography.Text type="secondary">
+                          Seçilen dosya: <b>{file.name}</b>
+                        </Typography.Text>
+                      )}
+                    </div>
+                  ) : (
+                    uploadHint
+                  )}
+                </div>
+              ) : null}
+            </Space>
           </Card>
 
           <div style={{ height: 14 }} />
 
+          {/* ✅ Feed */}
           <Card style={{ borderRadius: 14 }}>
             <List
               loading={loading}
@@ -266,7 +335,6 @@ export default function Home() {
         </div>
       </Content>
 
-      {/* Sağ: Notifications (Birthday/Communities yok) */}
       <Sider
         width={400}
         theme="light"

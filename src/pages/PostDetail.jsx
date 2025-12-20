@@ -1,35 +1,155 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Button, Card, Divider, Input, List, Space, Typography, message } from "antd";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  Input,
+  List,
+  Space,
+  Typography,
+  message,
+  Spin,
+} from "antd";
+import {
+  HeartOutlined,
+  HeartFilled,
+  MessageOutlined,
+  BookOutlined,
+  ArrowLeftOutlined,
+} from "@ant-design/icons";
 import { postsApi } from "../api/posts.api";
+import { userApi } from "../api/user.api";
+
+const { Title, Text } = Typography;
+
+const IMAGE_PUBLIC_BASE = "http://localhost:8087";
+function normalizeUrl(url) {
+  if (!url || typeof url !== "string") return null;
+  const t = url.trim();
+  if (!t) return null;
+  if (t.startsWith("http://") || t.startsWith("https://")) return t;
+  if (t.startsWith("/")) return `${IMAGE_PUBLIC_BASE}${t}`;
+  return `${IMAGE_PUBLIC_BASE}/${t}`;
+}
+
+function toLongOrNull(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
 
 export default function PostDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+
+  // post detail
   const [post, setPost] = useState(null);
 
+  // author profile (avatarUrl vs)
+  const [authorProfile, setAuthorProfile] = useState(null);
+
+  // comments
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [sending, setSending] = useState(false);
 
+  // like
   const [liking, setLiking] = useState(false);
+
+  const imageUrl = useMemo(() => {
+    const raw = post?.imageUrl ?? post?.ImageUrl ?? null;
+    return normalizeUrl(raw);
+  }, [post]);
+
+  const authorAvatarUrl = useMemo(() => {
+    return normalizeUrl(authorProfile?.avatarUrl ?? post?.avatarUrl ?? null);
+  }, [authorProfile, post]);
+
+  const authorLetter = (authorProfile?.username ?? post?.username ?? "U")
+    .charAt(0)
+    .toUpperCase();
 
   const load = async () => {
     try {
       setLoading(true);
+
+      // 1) post detail
       const res = await postsApi.detail(id);
       const data = res.data?.data ?? res.data;
 
-      // backend: liked + likeCount geliyor varsayıyoruz
-      setPost({
+      const mappedPost = {
         ...data,
+        // like
         liked: data?.liked ?? false,
         likeCount: data?.likeCount ?? 0,
-      });
+        // normalize image key if backend "ImageUrl" dönüyorsa
+        imageUrl: data?.imageUrl ?? data?.ImageUrl ?? null,
+      };
 
-      const embeddedComments = data?.comments ?? data?.commentList ?? [];
-      setComments(Array.isArray(embeddedComments) ? embeddedComments : []);
+      setPost(mappedPost);
+
+      // 2) comments
+      const embedded = data?.comments ?? data?.commentList ?? [];
+      const list = Array.isArray(embedded) ? embedded : [];
+      setComments(list);
+
+      // 3) author profile fetch (UserProfile avatarUrl için)
+      const authorId = toLongOrNull(mappedPost?.authUserId ?? mappedPost?.userId);
+      if (authorId) {
+        try {
+          const pres = await userApi.getProfileById(authorId);
+          const p = pres?.data?.data ?? pres?.data ?? pres;
+          setAuthorProfile({
+            ...p,
+            avatarUrl: p?.avatarUrl ?? null,
+          });
+        } catch {
+          setAuthorProfile(null);
+        }
+      } else {
+        setAuthorProfile(null);
+      }
+
+      // 4) comment authors avatarUrl fetch
+      // comment item: { id, authUserId, username, content, createdAt } (senin backend böyleydi)
+      const uniqCommentUserIds = Array.from(
+        new Set(
+          list
+            .map((c) => toLongOrNull(c?.authUserId ?? c?.userId))
+            .filter(Boolean)
+        )
+      );
+
+      if (uniqCommentUserIds.length) {
+        const map = new Map();
+
+        await Promise.allSettled(
+          uniqCommentUserIds.map(async (uid) => {
+            const r = await userApi.getProfileById(uid);
+            const p = r?.data?.data ?? r?.data ?? r;
+            map.set(uid, {
+              username: p?.username ?? `user_${uid}`,
+              avatarUrl: normalizeUrl(p?.avatarUrl),
+            });
+          })
+        );
+
+        // results unused but ok
+        setComments((prev) =>
+          prev.map((c) => {
+            const uid = toLongOrNull(c?.authUserId ?? c?.userId);
+            const prof = uid ? map.get(uid) : null;
+            return {
+              ...c,
+              username: c?.username ?? prof?.username ?? "User",
+              avatarUrl: prof?.avatarUrl ?? null,
+            };
+          })
+        );
+      }
     } catch (e) {
       message.error(e?.response?.data?.message || "Post yüklenemedi");
     } finally {
@@ -43,10 +163,11 @@ export default function PostDetail() {
   }, [id]);
 
   const likePost = async () => {
-    if (liking) return;
+    if (liking || !post) return;
+
+    const prev = post;
 
     // optimistic toggle
-    const prev = post;
     setPost((p) => {
       if (!p) return p;
       const nextLiked = !p.liked;
@@ -56,10 +177,9 @@ export default function PostDetail() {
 
     setLiking(true);
     try {
-      const res = await postsApi.like(id); // toggle
-      const data = res.data?.data ?? res.data; // { postId, liked, likeCount }
+      const res = await postsApi.like(id);
+      const data = res.data?.data ?? res.data; // { liked, likeCount } vb.
 
-      // response ile senkronla (homepage mantığı)
       setPost((p) => {
         if (!p) return p;
         return {
@@ -69,7 +189,6 @@ export default function PostDetail() {
         };
       });
     } catch (e) {
-      // rollback
       setPost(prev);
       message.error(e?.response?.data?.message || "Like başarısız");
     } finally {
@@ -93,38 +212,129 @@ export default function PostDetail() {
   };
 
   return (
-    <Space direction="vertical" style={{ width: "100%" }} size={16}>
-      <Card loading={loading}>
-        <Typography.Title level={4} style={{ marginTop: 0 }}>
-          Post Detail
-        </Typography.Title>
+    <div style={{ maxWidth: 980, margin: "0 auto" }}>
+      {/* top bar */}
+      <Space style={{ width: "100%", justifyContent: "space-between", marginBottom: 12 }}>
+        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)}>
+          Geri
+        </Button>
+       
+      </Space>
 
-        <div style={{ opacity: 0.7, marginBottom: 6 }}>{post?.username || "User"}</div>
-        <div style={{ fontSize: 16 }}>{post?.content || ""}</div>
+      {/* post card */}
+      <Card style={{ borderRadius: 14 }} bodyStyle={{ padding: 22 }}>
+        {loading && !post ? (
+          <div style={{ padding: 24, display: "grid", placeItems: "center" }}>
+            <Spin />
+          </div>
+        ) : (
+          <>
+            {/* header */}
+            <Space align="start" style={{ width: "100%", justifyContent: "space-between" }}>
+              <Space align="center">
+                <Avatar size={46} src={authorAvatarUrl || undefined}>
+                  {!authorAvatarUrl && authorLetter}
+                </Avatar>
 
-        <Divider />
+                <div>
+                  <Text style={{ fontSize: 16, fontWeight: 700, color: "#000" }}>
+                    {authorProfile?.username ?? post?.username ?? "User"}
+                  </Text>
+                  <br />
+                  <Text type="secondary" style={{ fontSize: 12 }}>
+                    {post?.createdAt ? new Date(post.createdAt).toLocaleString() : ""}
+                  </Text>
+                </div>
+              </Space>
 
-        <Space>
-          <Button
-            type={post?.liked ? "primary" : "default"}
-            onClick={likePost}
-            loading={liking}
-          >
-            {post?.liked ? "Liked" : "Like"} {post?.likeCount ?? 0}
-          </Button>
-        </Space>
+           
+            </Space>
+
+            {/* content */}
+            {post?.content ? (
+              <div style={{ marginTop: 12 }}>
+                <Text style={{ fontSize: 16 }}>{post.content}</Text>
+              </div>
+            ) : null}
+
+            {/* image */}
+            {imageUrl ? (
+              <div
+                style={{
+                  marginTop: 14,
+                  borderRadius: 14,
+                  overflow: "hidden",
+                  background: "rgba(0,0,0,0.04)",
+                }}
+              >
+                <img
+                  src={imageUrl}
+                  alt="post"
+                  style={{
+                    width: "100%",
+                    height: 520,
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              </div>
+            ) : null}
+
+            <Divider style={{ margin: "14px 0" }} />
+
+            {/* actions */}
+            <Space style={{ width: "100%", justifyContent: "space-between" }}>
+              <Space size={18}>
+                <Button
+                  type="text"
+                  icon={post?.liked ? <HeartFilled /> : <HeartOutlined />}
+                  onClick={likePost}
+                  loading={liking}
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: post?.liked ? "#1677ff" : undefined,
+                  }}
+                >
+                  {post?.likeCount ?? 0}
+                </Button>
+
+                <Button
+                  type="text"
+                  icon={<MessageOutlined />}
+                  style={{ fontSize: 18, fontWeight: 700 }}
+                >
+                  {comments.length}
+                </Button>
+              </Space>
+
+              <Button type="text" icon={<BookOutlined />} style={{ fontWeight: 700 }}>
+                Kaydet
+              </Button>
+            </Space>
+          </>
+        )}
       </Card>
 
-      <Card>
-        <Typography.Title level={5} style={{ marginTop: 0 }}>
-          Comments
-        </Typography.Title>
+      <div style={{ height: 14 }} />
 
-        <Space.Compact style={{ width: "100%", marginBottom: 12 }}>
+      {/* comments */}
+      <Card style={{ borderRadius: 14 }} bodyStyle={{ padding: 22 }}>
+        <Title level={5} style={{ marginTop: 0, marginBottom: 12 }}>
+          Yorumlar
+        </Title>
+
+        <Space.Compact style={{ width: "100%", marginBottom: 14 }}>
           <Input
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
             placeholder="Yorum yaz..."
+            onPressEnter={(e) => {
+              if (!e.shiftKey) {
+                e.preventDefault();
+                sendComment();
+              }
+            }}
           />
           <Button type="primary" loading={sending} onClick={sendComment}>
             Gönder
@@ -135,23 +345,33 @@ export default function PostDetail() {
           loading={loading}
           dataSource={comments}
           locale={{ emptyText: "Henüz yorum yok" }}
-          renderItem={(c) => (
-            <List.Item>
-              <List.Item.Meta
-                title={c.username || "User"}
-                description={
-                  <div>
-                    <div>{c.content ?? ""}</div>
-                    <div style={{ opacity: 0.6, fontSize: 12, marginTop: 4 }}>
-                      {c.createdAt ? new Date(c.createdAt).toLocaleString() : ""}
-                    </div>
-                  </div>
-                }
-              />
-            </List.Item>
-          )}
+          renderItem={(c) => {
+            const cAvatar = normalizeUrl(c?.avatarUrl);
+            const cLetter = (c?.username ?? "U").charAt(0).toUpperCase();
+
+            return (
+              <List.Item style={{ paddingLeft: 0, paddingRight: 0 }}>
+                <List.Item.Meta
+                  avatar={
+                    <Avatar src={cAvatar || undefined}>
+                      {!cAvatar && cLetter}
+                    </Avatar>
+                  }
+                  title={
+                    <Space size={10}>
+                      <Text strong>{c?.username ?? "User"}</Text>
+                      <Text type="secondary" style={{ fontSize: 12 }}>
+                        {c?.createdAt ? new Date(c.createdAt).toLocaleString() : ""}
+                      </Text>
+                    </Space>
+                  }
+                  description={<Text>{c?.content ?? ""}</Text>}
+                />
+              </List.Item>
+            );
+          }}
         />
       </Card>
-    </Space>
+    </div>
   );
 }

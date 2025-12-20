@@ -6,9 +6,12 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:8080",
+        target: "http://localhost:8080", // ✅ gateway
         changeOrigin: true,
-        secure: false,
+      },
+      "/files": {
+        target: "http://localhost:8087", // ✅ image-service files
+        changeOrigin: true,
       },
     },
   },

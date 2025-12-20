@@ -16,6 +16,15 @@ import { chatApi } from "../api/chat.api";
 
 const { Title, Text } = Typography;
 
+/**
+ * avatarUrl backend'den tam URL gelmiyorsa (ör: /files/xxx.png)
+ * burada tamamlıyoruz.
+ *
+ * image-service local: http://localhost:8087
+ * gateway üzerinden /files proxylersen: http://localhost:8080
+ */
+const IMAGE_PUBLIC_BASE = "http://localhost:8087";
+
 function getAuthFromStorage() {
   const raw = localStorage.getItem("auth");
   if (!raw) return null;
@@ -38,6 +47,20 @@ function toWsUrl(httpUrl) {
   }
 }
 
+function normalizeAvatarUrl(url) {
+  if (!url || typeof url !== "string") return null;
+
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+
+  if (trimmed.startsWith("/")) return `${IMAGE_PUBLIC_BASE}${trimmed}`;
+  return `${IMAGE_PUBLIC_BASE}/${trimmed}`;
+}
+
 /**
  * WS endpointin chat-service: /ws
  * Eğer gateway WS proxy yapmıyorsa direkt chat-service'e bağlan:
@@ -46,29 +69,23 @@ function toWsUrl(httpUrl) {
 const WS_HTTP_URL = "ws://localhost:8086/ws";
 
 export default function ChatPage() {
-  // --- auth/me
   const [me, setMe] = useState(null);
 
-  // --- following list
   const [loadingFollowing, setLoadingFollowing] = useState(true);
   const [followingUsers, setFollowingUsers] = useState([]);
 
-  // --- selection
   const [selectedRecipientId, setSelectedRecipientId] = useState(null);
   const [selectedRecipient, setSelectedRecipient] = useState(null);
   const [loadingRecipient, setLoadingRecipient] = useState(false);
 
-  // --- conversation & messages
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [messagesState, setMessagesState] = useState([]);
   const [wsConnected, setWsConnected] = useState(false);
 
-  // --- composer
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
 
-  // --- ws refs
   const stompRef = useRef(null);
   const subRef = useRef(null);
   const connectedRef = useRef(false);
@@ -76,6 +93,7 @@ export default function ChatPage() {
 
   const auth = useMemo(() => getAuthFromStorage(), []);
   const token = auth?.token ? `Bearer ${auth.token}` : null;
+
   const myId = useMemo(() => me?.id ?? me?.userId ?? me?.authUserId, [me]);
 
   const scrollToBottom = (smooth = true) => {
@@ -84,15 +102,17 @@ export default function ChatPage() {
     });
   };
 
-  // 1) me()
+  // 1) me() (kendi profilini çeken endpoint zaten avatarUrl döndürüyor olmalı)
   useEffect(() => {
     const run = async () => {
       try {
         const res = await userApi.me();
-        console.log("ME RAW:", res);
-        const u = res?.data ?? res;
-        console.log("ME DATA:", u);
-        setMe(u);
+        const u = res?.data?.data ?? res?.data ?? res;
+
+        setMe({
+          ...u,
+          avatarUrl: normalizeAvatarUrl(u?.avatarUrl),
+        });
       } catch (e) {
         console.error(e);
         message.error("Kullanıcı bilgisi alınamadı (me).");
@@ -101,12 +121,14 @@ export default function ChatPage() {
     run();
   }, []);
 
-  // 2) following-ids -> profile() -> users list
+  // 2) following ids -> her id için profile-service'ten profil çek (avatar burada!)
   useEffect(() => {
     const run = async () => {
       try {
         setLoadingFollowing(true);
 
+        // burada userApi.followers(...) kullanıyorsun ama "Takip Ettiklerim" yazıyor.
+        // endpointin gerçekte following döndürüyorsa ok.
         const idsRes = await userApi.followers(1, 50);
         const payload = idsRes?.data ?? idsRes;
 
@@ -118,26 +140,30 @@ export default function ChatPage() {
           ? payload.items
           : [];
 
-        const uniqIds = Array.from(new Set(ids)).filter(Boolean);
+        const uniqIds = Array.from(new Set(ids))
+          .filter((x) => x !== null && x !== undefined)
+          .map((x) => Number(x))
+          .filter((x) => !Number.isNaN(x));
 
+        // ✅ artık userApi.profile değil, userApi.getProfileById kullanıyoruz
         const results = await Promise.allSettled(
           uniqIds.map(async (id) => {
-            const p = await userApi.profile(id);
-            return p?.data ?? p;
+            const p = await userApi.getProfileById(id);
+            const data = p?.data?.data ?? p?.data ?? p;
+
+            return {
+              id,
+              username: data?.username ?? `user_${id}`,
+              bio: data?.bio ?? "",
+              avatarUrl: normalizeAvatarUrl(data?.avatarUrl),
+            };
           })
         );
 
         const users = results
           .filter((r) => r.status === "fulfilled")
           .map((r) => r.value)
-          .filter(Boolean)
-          .map((u) => ({
-            id: u.id ?? u.userId,
-            username: u.username,
-            profileNick: u.profileNick || u.nick || u.name || null,
-            avatarUrl: u.imageUrl || u.avatarUrl || u.profileImage || null,
-          }))
-          .filter((u) => u.id);
+          .filter((u) => u?.id);
 
         users.sort((a, b) =>
           (a.username || "").localeCompare(b.username || "")
@@ -155,7 +181,7 @@ export default function ChatPage() {
     run();
   }, []);
 
-  // 3) recipient profile (fresh)
+  // 3) recipient profile (fresh) - seçilen kullanıcıyı da profile-service'ten çek
   useEffect(() => {
     const run = async () => {
       if (!selectedRecipientId) {
@@ -170,15 +196,16 @@ export default function ChatPage() {
 
       try {
         setLoadingRecipient(true);
-        const freshRes = await userApi.profile(selectedRecipientId);
-        const fresh = freshRes?.data ?? freshRes;
+
+        // ✅ user-profile servisten fresh çek
+        const freshRes = await userApi.getProfileById(selectedRecipientId);
+        const fresh = freshRes?.data?.data ?? freshRes?.data ?? freshRes;
 
         setSelectedRecipient({
-          id: fresh.id ?? fresh.userId ?? selectedRecipientId,
-          username: fresh.username,
-          profileNick: fresh.profileNick || fresh.nick || fresh.name || null,
-          avatarUrl:
-            fresh.imageUrl || fresh.avatarUrl || fresh.profileImage || null,
+          id: Number(selectedRecipientId),
+          username: fresh?.username ?? `user_${selectedRecipientId}`,
+          bio: fresh?.bio ?? "",
+          avatarUrl: normalizeAvatarUrl(fresh?.avatarUrl),
         });
       } catch (e) {
         console.error(e);
@@ -190,7 +217,7 @@ export default function ChatPage() {
     run();
   }, [selectedRecipientId, followingUsers]);
 
-  // 4) messages fetch when conversation changes
+  // 4) messages fetch
   useEffect(() => {
     const run = async () => {
       if (!activeConversationId) {
@@ -200,7 +227,6 @@ export default function ChatPage() {
       try {
         setLoadingMessages(true);
         const data = await chatApi.getMessages(activeConversationId);
-        // chatApi getMessages res.data döndürüyorsa direkt array; değilse .data
         const list = data?.data ?? data;
         setMessagesState(Array.isArray(list) ? list : []);
         setTimeout(() => scrollToBottom(false), 0);
@@ -215,10 +241,10 @@ export default function ChatPage() {
     run();
   }, [activeConversationId]);
 
-  // 5) WS connect & subscribe based on activeConversationId
+  // 5) WS connect
   useEffect(() => {
-    const myId = me?.id ?? me?.userId ?? me?.authUserId;
-    if (!activeConversationId || !myId) return;
+    const myIdLocal = me?.id ?? me?.userId ?? me?.authUserId;
+    if (!activeConversationId || !myIdLocal) return;
 
     const cleanup = () => {
       try {
@@ -245,7 +271,7 @@ export default function ChatPage() {
       brokerURL: toWsUrl(WS_HTTP_URL),
       reconnectDelay: 1500,
       connectHeaders: {
-        "X-User-Id": String(myId),
+        "X-User-Id": String(myIdLocal),
         ...(token ? { Authorization: token } : {}),
       },
       debug: (s) => console.log("[STOMP]", s),
@@ -255,7 +281,7 @@ export default function ChatPage() {
 
         client.publish({
           destination: "/app/presence.enter",
-          headers: { "X-User-Id": String(myId) },
+          headers: { "X-User-Id": String(myIdLocal) },
           body: JSON.stringify({ conversationId: activeConversationId }),
         });
 
@@ -289,7 +315,7 @@ export default function ChatPage() {
         if (stompRef.current && connectedRef.current) {
           stompRef.current.publish({
             destination: "/app/presence.leave",
-            headers: { "X-User-Id": String(myId) },
+            headers: { "X-User-Id": String(myIdLocal) },
             body: JSON.stringify({ conversationId: activeConversationId }),
           });
         }
@@ -300,13 +326,13 @@ export default function ChatPage() {
     };
   }, [activeConversationId, me, token]);
 
-  // 6) click user -> findOrCreate conversation
+  // 6) select user
   const onSelectUser = async (u) => {
     setSelectedRecipientId(u.id);
 
     try {
       const res = await chatApi.findOrCreateConversation(u.id);
-      const data = res?.data ?? res; // {conversationId}
+      const data = res?.data ?? res;
       setActiveConversationId(data.conversationId);
     } catch (e) {
       console.error(e);
@@ -318,9 +344,9 @@ export default function ChatPage() {
     const content = text.trim();
     if (!content) return;
 
-    const myId = me?.id ?? me?.userId ?? me?.authUserId;
+    const myIdLocal = me?.id ?? me?.userId ?? me?.authUserId;
 
-    if (!myId) return message.error("Kullanıcı bilgisi yok (me).");
+    if (!myIdLocal) return message.error("Kullanıcı bilgisi yok (me).");
     if (!activeConversationId) return message.error("Önce bir sohbet seç.");
     if (!selectedRecipientId) return message.error("Recipient seçili değil.");
     if (!connectedRef.current || !stompRef.current)
@@ -329,17 +355,9 @@ export default function ChatPage() {
     try {
       setSending(true);
 
-      // ✅ debug: ne gönderiyoruz?
-      console.log("SEND WS payload:", {
-        conversationId: activeConversationId,
-        recipientId: selectedRecipientId,
-        content,
-        myId,
-      });
-
       stompRef.current.publish({
         destination: "/app/chat.send",
-        headers: { "X-User-Id": String(myId) }, // ✅ kritik fix
+        headers: { "X-User-Id": String(myIdLocal) },
         body: JSON.stringify({
           conversationId: Number(activeConversationId),
           recipientId: Number(selectedRecipientId),
@@ -360,8 +378,12 @@ export default function ChatPage() {
     if (!selectedRecipientId) return "Bir kullanıcı seç";
     if (loadingRecipient) return "Yükleniyor...";
     if (!selectedRecipient) return `Kullanıcı #${selectedRecipientId}`;
-    return selectedRecipient.profileNick || `@${selectedRecipient.username}`;
+    return `@${selectedRecipient.username}`;
   }, [selectedRecipientId, loadingRecipient, selectedRecipient]);
+
+  const rightAvatarLetter = (selectedRecipient?.username ?? "U")
+    .charAt(0)
+    .toUpperCase();
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: 16 }}>
@@ -372,9 +394,7 @@ export default function ChatPage() {
             <Title level={5} style={{ margin: 0 }}>
               Takip Ettiklerim
             </Title>
-            <Text type="secondary">
-              {me?.username ? `@${me.username}` : ""}
-            </Text>
+            <Text type="secondary">{me?.username ? `@${me.username}` : ""}</Text>
           </Space>
         }
         bodyStyle={{ padding: 0, maxHeight: 680, overflow: "auto" }}
@@ -389,6 +409,8 @@ export default function ChatPage() {
             locale={{ emptyText: "Takip ettiğin kimse yok." }}
             renderItem={(u) => {
               const active = Number(u.id) === Number(selectedRecipientId);
+              const letter = (u.username ?? "U").charAt(0).toUpperCase();
+
               return (
                 <List.Item
                   style={{
@@ -399,11 +421,12 @@ export default function ChatPage() {
                   onClick={() => onSelectUser(u)}
                 >
                   <Space>
-                    <Avatar src={u.avatarUrl} />
+                    <Avatar src={u.avatarUrl || undefined}>
+                      {!u.avatarUrl && letter}
+                    </Avatar>
+
                     <div>
-                      <Text strong>
-                        {u.profileNick || u.username || `User #${u.id}`}
-                      </Text>
+                      <Text strong>{u.username || `User #${u.id}`}</Text>
                       <br />
                       <Text type="secondary">@{u.username || "unknown"}</Text>
                     </div>
@@ -418,17 +441,24 @@ export default function ChatPage() {
       {/* SAĞ */}
       <Card
         title={
-          <Space direction="vertical" size={0}>
-            <Title level={5} style={{ margin: 0 }}>
-              {rightTitle}
-            </Title>
-            {selectedRecipient?.username ? (
-              <Text type="secondary">@{selectedRecipient.username}</Text>
-            ) : (
-              <Text type="secondary">
-                Sohbeti başlatmak için soldan birini seç.
-              </Text>
-            )}
+          <Space align="center" size={12}>
+            <Avatar src={selectedRecipient?.avatarUrl || undefined}>
+              {!selectedRecipient?.avatarUrl && rightAvatarLetter}
+            </Avatar>
+
+            <Space direction="vertical" size={0}>
+              <Title level={5} style={{ margin: 0 }}>
+                {rightTitle}
+              </Title>
+
+              {selectedRecipient?.username ? (
+                <Text type="secondary">@{selectedRecipient.username}</Text>
+              ) : (
+                <Text type="secondary">
+                  Sohbeti başlatmak için soldan birini seç.
+                </Text>
+              )}
+            </Space>
           </Space>
         }
         bodyStyle={{
@@ -485,7 +515,9 @@ export default function ChatPage() {
                           style={{
                             maxWidth: "75%",
                             padding: "10px 12px",
-                            borderRadius: mine ? "12px 12px 4px 12px" : "12px 12px 12px 4px",
+                            borderRadius: mine
+                              ? "12px 12px 4px 12px"
+                              : "12px 12px 12px 4px",
                             border: "1px solid #f0f0f0",
                             background: mine ? "#e6f4ff" : "#fafafa",
                           }}
@@ -531,12 +563,13 @@ export default function ChatPage() {
                 Gönder
               </Button>
             </Space.Compact>
+
+            <Text type={wsConnected ? "success" : "danger"}>
+              {wsConnected ? "WS: Connected" : "WS: Disconnected"}
+            </Text>
           </>
         )}
       </Card>
-      <Text type={wsConnected ? "success" : "danger"}>
-        {wsConnected ? "WS: Connected" : "WS: Disconnected"}
-      </Text>
     </div>
   );
 }
