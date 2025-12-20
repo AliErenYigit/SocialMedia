@@ -29,7 +29,7 @@ const { Sider, Content } = Layout;
 
 const menuItems = [
   { key: "home", label: "Home", icon: <HomeOutlined />, path: "/" },
-  { key: "chat", label: "Chat", icon: <MessageOutlined />, path: "/chat" },
+  { key: "chat", label: "Chat", icon: <MessageOutlined />, path: "/chat/:conversationId" },
   {
     key: "profile",
     label: "Profile",

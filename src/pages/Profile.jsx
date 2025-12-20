@@ -18,57 +18,58 @@ export default function Profile() {
   console.log("PROFILE PAGE RENDER");
 
   // ✅ localStorage’dan user al
- const token = localStorage.getItem("auth"); 
+  const token = localStorage.getItem("auth");
 
- const userId = getUserIdFromToken(token);
+  const userId = getUserIdFromToken(token);
 
-console.log("USER ID:", userId);
-
-
+  console.log("USER ID:", userId);
 
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
 
   const loadProfile = async () => {
-  if (!userId) {
-    message.error("Kullanıcı bilgisi bulunamadı (userId yok)");
-    return;
-  }
+    if (!userId) {
+      message.error("Kullanıcı bilgisi bulunamadı (userId yok)");
+      return;
+    }
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const [profileRes, followersRes, followingRes] = await Promise.all([
-      userApi.profile(userId),
-      userApi.followerCount(userId),
-      userApi.followingCount(userId),
-    ]);
+      const [profileRes, meRes, postCountRes, followersRes, followingRes] =
+        await Promise.all([
+          userApi.profile(userId),
+          userApi.me(),
+          userApi.postCount(userId),
+          userApi.followerCount(userId),
+          userApi.followingCount(userId),
+        ]);
 
-    const profileData = profileRes.data?.data ?? profileRes.data;
+      const profileData = profileRes.data?.data ?? profileRes.data;
+      const meData = meRes.data?.data ?? meRes.data;
+      const postCount = postCountRes.data?.data ?? postCountRes.data ?? 0;
 
-    const followers = followersRes.data?.data ?? followersRes.data ?? 0;
-    const following = followingRes.data?.data ?? followingRes.data ?? 0;
+      const followers = followersRes.data?.data ?? followersRes.data ?? 0;
+      const following = followingRes.data?.data ?? followingRes.data ?? 0;
 
-    setProfile({
-      username: profileData?.username ?? "User",
-      bio: profileData?.bio ?? "",
-      avatarUrl: profileData?.avatarUrl ?? null,
+      setProfile({
+        username: profileData?.username ?? "User",
+        meData: meData.username,
+        bio: profileData?.bio ?? "",
+        avatarUrl: profileData?.avatarUrl ?? null,
 
-      // postCount şimdilik profile endpointinden geliyorsa kalsın
-      posts: profileData?.posts ?? profileData?.postCount ?? 0,
-
-      // ✅ artık follow endpointlerinden
-      followers: Number(followers) || 0,
-      following: Number(following) || 0,
-    });
-  } catch (e) {
-    message.error(e?.response?.data?.message || "Profil yüklenemedi");
-  } finally {
-    setLoading(false);
-  }
-};
-
+        postCount: Number(postCount) || 0,
+        // ✅ artık follow endpointlerinden
+        followers: Number(followers) || 0,
+        following: Number(following) || 0,
+      });
+    } catch (e) {
+      message.error(e?.response?.data?.message || "Profil yüklenemedi");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     loadProfile();
@@ -87,7 +88,11 @@ console.log("USER ID:", userId);
 
   return (
     <div style={{ maxWidth: 980, margin: "0 auto", padding: 20 }}>
-      <Card loading={loading} style={{ borderRadius: 16 }} bodyStyle={{ padding: 24 }}>
+      <Card
+        loading={loading}
+        style={{ borderRadius: 16 }}
+        bodyStyle={{ padding: 24 }}
+      >
         {!profile ? null : (
           <Space align="start" size={24} style={{ width: "100%" }}>
             {/* Avatar */}
@@ -135,8 +140,12 @@ console.log("USER ID:", userId);
               >
                 <div>
                   <Typography.Title level={3} style={{ margin: 0 }}>
-                    {profile.username}
+                    {profile.meData}
                   </Typography.Title>
+
+                  <Typography.Text type="secondary" style={{ fontSize: 14 }}>
+                    @{profile.username}
+                  </Typography.Text>
                 </div>
 
                 <Button
@@ -149,7 +158,7 @@ console.log("USER ID:", userId);
               {/* Sayılar */}
               <Space size={24} style={{ marginTop: 14 }}>
                 <div>
-                  <Typography.Text strong>{profile.posts}</Typography.Text>{" "}
+                  <Typography.Text strong>{profile.postCount}</Typography.Text>{" "}
                   <Typography.Text>gönderi</Typography.Text>
                 </div>
                 <div>
