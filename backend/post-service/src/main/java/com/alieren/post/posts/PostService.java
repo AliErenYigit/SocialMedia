@@ -152,4 +152,7 @@ public class PostService {
                 commentCount
         );
     }
+    public long getPostCount(String authUserId) {
+        return repo.countByAuthUserId(authUserId);
+    }
 }

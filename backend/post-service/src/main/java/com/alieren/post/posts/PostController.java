@@ -52,4 +52,10 @@ public class PostController {
         return service.getPostDetail(id, authUserId, authHeader);
     }
 
+    // ✅ kullanıcının post sayısı
+    @GetMapping("/users/{userId}/count")
+    public long postCount(@PathVariable String userId) {
+        return service.getPostCount(userId);
+    }
+
 }

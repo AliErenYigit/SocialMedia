@@ -5,17 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="102f3872-e92e-44a0-841f-e7406c65117f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/auth-service/src/main/java/com/alieren/auth/dto/UserResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/users/dto/UserProfileCountResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/config/WebSocketConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/controller/ChatRestController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/controller/ChatWsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/controller/ConversationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/controller/PresenceWsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/dto/ConversationCreateRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/dto/ConversationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/dto/MessageResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/dto/PresencePayload.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/dto/SendMessageRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/kafka/ChatNotificationEvents.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/kafka/NotificationEventProducer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/model/Conversation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/model/Message.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/repository/ConversationRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/repository/MessageRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/service/ChatService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/chat-service/src/main/java/com/alieren/chat/service/PresenceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/auth-service/src/main/java/com/alieren/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/auth-service/src/main/java/com/alieren/auth/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/auth-service/src/main/java/com/alieren/auth/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/auth-service/src/main/java/com/alieren/auth/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/follow/FollowService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/users/UserProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/alieren/user/users/UserProfileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/post-service/src/main/java/com/alieren/post/posts/PostService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/src/api/user.api.js" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/api/user.api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/src/app/AppLayout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/app/AppLayout.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend/src/app/router.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/app/router.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/Home.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/pages/Home.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/Profile.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/src/pages/Profile.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,31 +66,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.ApiGatewayApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AuthServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.DiscoveryServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.NotificationServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.PostServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.UserServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.notification-service [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.notification-service [compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.notification-service [deploy].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.notification-service [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.social-media-parent [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.social-media-parent [install].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/userPost&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/alier/java projelerisii/SocialMedia&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.scopes&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.ApiGatewayApplication.executor": "Run",
+    "Application.AuthServiceApplication.executor": "Run",
+    "Application.ChatServiceApplication.executor": "Run",
+    "Application.DiscoveryServiceApplication.executor": "Run",
+    "Application.NotificationServiceApplication.executor": "Run",
+    "Application.PostServiceApplication.executor": "Run",
+    "Application.UserServiceApplication.executor": "Run",
+    "Maven.chat-service [install].executor": "Run",
+    "Maven.notification-service [clean].executor": "Run",
+    "Maven.notification-service [compile].executor": "Run",
+    "Maven.notification-service [deploy].executor": "Run",
+    "Maven.notification-service [install].executor": "Run",
+    "Maven.social-media-parent [clean].executor": "Run",
+    "Maven.social-media-parent [install].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "feature/userPost",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/alier/java projelerisii/SocialMedia",
+    "settings.editor.selected.configurable": "project.scopes"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\alier\java projelerisii\SocialMedia\backend" />
@@ -76,7 +102,7 @@
       <recent name="C:\Users\alier\java projelerisii\SocialMedia\user-service\src\main\java\com\alieren\user\users" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.UserServiceApplication">
+  <component name="RunManager" selected="Application.ChatServiceApplication">
     <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.alieren.api_gateway.ApiGatewayApplication" />
       <module name="api-gateway" />
@@ -103,12 +129,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DiscoveryServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.alieren.discovery.DiscoveryServiceApplication" />
-      <module name="discovery-service" />
+    <configuration name="ChatServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.alieren.chat.ChatServiceApplication" />
+      <module name="chat-service" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.alieren.discovery.*" />
+          <option name="PATTERN" value="com.alieren.chat.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -155,11 +181,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.ChatServiceApplication" />
+        <item itemvalue="Application.ApiGatewayApplication" />
+        <item itemvalue="Application.PostServiceApplication" />
         <item itemvalue="Application.UserServiceApplication" />
         <item itemvalue="Application.AuthServiceApplication" />
-        <item itemvalue="Application.DiscoveryServiceApplication" />
-        <item itemvalue="Application.PostServiceApplication" />
-        <item itemvalue="Application.ApiGatewayApplication" />
       </list>
     </recent_temporary>
   </component>
