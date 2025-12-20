@@ -8,6 +8,7 @@ public record PostDetailResponse(
         String content,
         String authUserId,
         String username,
+        String ImageUrl,
         Instant createdAt,
         boolean liked,
         long likeCount,

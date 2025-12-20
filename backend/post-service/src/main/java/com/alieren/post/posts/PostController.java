@@ -3,8 +3,9 @@ package com.alieren.post.posts;
 import com.alieren.post.posts.dto.CreatePostRequest;
 import com.alieren.post.posts.dto.PostDetailResponse;
 import com.alieren.post.posts.dto.PostResponse;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -18,12 +19,14 @@ public class PostController {
         this.service = service;
     }
 
-    @PostMapping
-    public PostResponse create(
-            @RequestHeader("X-User-Id") String userId,
-            @Valid @RequestBody CreatePostRequest req
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CreatePostRequest create(
+            @RequestHeader("X-User-Id") String me,
+            @RequestPart(value = "content", required = false) String content,
+            @RequestPart(value = "file", required = false) MultipartFile file
     ) {
-        return service.create(userId, req);
+        // me zaten gateway'den geliyor (auth user id)
+        return service.create(me, content, file);
     }
 
     @GetMapping
