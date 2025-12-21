@@ -6,6 +6,8 @@ import com.alieren.user.users.dto.UserSummaryResponse;
 import com.alieren.user.users.dto.UserBatchRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -32,6 +34,27 @@ public class UserController {
             @Valid @RequestBody UpdateMeRequest req
     ) {
         return service.updateMe(userId, req);
+    }
+
+    // ✅ YENİ: Avatar upload (multipart)
+    @PostMapping(value = "/me/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public UserProfileResponse uploadAvatar(
+            @RequestHeader("X-User-Id") String me,
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @RequestPart("file") MultipartFile file
+    ) throws Exception {
+        return service.uploadAvatar(
+                me,
+                file.getBytes(),
+                file.getOriginalFilename(),
+                file.getContentType(),
+                authHeader
+        );
+    }
+
+    @GetMapping("/{userId}/profile")
+    public UserProfileResponse getProfileById(@PathVariable Long userId) {
+        return service.getProfileById(userId);
     }
 
     @PostMapping("/batch")

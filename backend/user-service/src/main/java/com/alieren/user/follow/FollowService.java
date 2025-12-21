@@ -60,4 +60,13 @@ public class FollowService {
                 .map(Follow::getFollowingAuthUserId)
                 .toList();
     }
+    // ✅ followers = following_auth_user_id = me
+    public long getFollowersCount(String userId) {
+        return repo.countByFollowingAuthUserId(userId);
+    }
+
+    // ✅ following = follower_auth_user_id = me
+    public long getFollowingCount(String userId) {
+        return repo.countByFollowerAuthUserId(userId);
+    }
 }

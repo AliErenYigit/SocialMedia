@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
         <module name="shared" />
+        <module name="chat-service" />
         <module name="discovery-service" />
       </profile>
       <profile name="Annotation profile for post-service" enabled="true">
@@ -44,6 +45,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="auth-service" options="-parameters" />
+      <module name="chat-service" options="-parameters" />
       <module name="discovery-service" options="-parameters" />
       <module name="notification-service" options="-parameters" />
       <module name="post-service" options="-parameters" />

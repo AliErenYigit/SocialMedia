@@ -27,6 +27,9 @@ public class Post {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(name = "imageUrl")
+    private String imageUrl;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> likes = new ArrayList<>();
 

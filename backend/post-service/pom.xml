@@ -33,6 +33,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webflux</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
         <!-- Validation (jakarta.validation.*) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

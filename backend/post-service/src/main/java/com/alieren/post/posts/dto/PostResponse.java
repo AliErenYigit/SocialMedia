@@ -6,6 +6,7 @@ public record PostResponse(
         Long id,
         String authUserId,
         String content,
+        String ImageUrl,
         Instant createdAt,
         long likeCount,
         long commentCount
