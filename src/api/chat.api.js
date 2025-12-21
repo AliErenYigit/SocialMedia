@@ -12,4 +12,5 @@ export const chatApi = {
     const res = await http.get(`http://localhost:8080/api/chat/conversations/${conversationId}/messages`);
     return res.data; // MessageResponse[]
   },
+  getConversations: () => http.get("http://localhost:8080/api/chat/get/conversations")
 };
