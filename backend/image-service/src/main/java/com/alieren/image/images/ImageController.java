@@ -16,9 +16,7 @@ public class ImageController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public StoredImage upload(@RequestPart("file") MultipartFile file, HttpServletRequest req) throws Exception {
-        // base url üret (gateway arkasında çalışıyorsa header’dan da alabiliriz)
-        String baseUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort();
-        return storage.save(file, baseUrl);
+    public StoredImage upload(@RequestPart("file") MultipartFile file) {
+        return storage.save(file);
     }
 }

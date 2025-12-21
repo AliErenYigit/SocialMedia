@@ -32,6 +32,7 @@ public class NotificationController {
             case "POST_LIKED" -> username + " senin postunu beğendi.";
             case "COMMENT_CREATED" -> username + " postuna yorum yaptı.";
             case "FOLLOW_CREATED" -> username + " seni takip etmeye başladı.";
+            case "MESSAGE_CREATED" -> username + "sana bir mesaj yolladı.";
             default -> username + " bir işlem yaptı.";
         };
     }

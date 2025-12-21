@@ -18,11 +18,13 @@ public class LocalStorageService {
     @Value("${app.public.base-url:http://localhost:8087}")
     private String publicBaseUrl;
 
-    public String save(MultipartFile file) {
+    public StoredImage save(MultipartFile file) {
         try {
-            String original = StringUtils.cleanPath(file.getOriginalFilename() == null ? "file" : file.getOriginalFilename());
-            String ext = "";
+            String original = StringUtils.cleanPath(
+                    file.getOriginalFilename() == null ? "file" : file.getOriginalFilename()
+            );
 
+            String ext = "";
             int dot = original.lastIndexOf(".");
             if (dot > -1) ext = original.substring(dot);
 
@@ -34,8 +36,9 @@ public class LocalStorageService {
             Path target = dir.resolve(filename);
             Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
 
-            // ✅ public url
-            return publicBaseUrl + "/files/" + filename;
+            String url = publicBaseUrl + "/files/" + filename;
+
+            return new StoredImage(url, filename);
 
         } catch (IOException e) {
             throw new RuntimeException("File upload failed", e);

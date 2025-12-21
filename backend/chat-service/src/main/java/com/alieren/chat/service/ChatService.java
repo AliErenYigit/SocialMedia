@@ -32,6 +32,7 @@ public class ChatService {
     }
 
     public MessageResponse sendMessage(Long senderId, SendMessageRequest req) {
+
         // 1) DB’ye kaydet
         Message m = new Message();
         m.setConversationId(req.getConversationId());
@@ -51,9 +52,23 @@ public class ChatService {
                 saved.getCreatedAt()
         );
 
-        // 2) WS yayınla
+        // 2) WS yayınla - aktif sohbet ekranı için
         messagingTemplate.convertAndSend(
                 "/topic/conversations/" + saved.getConversationId(),
+                payload
+        );
+
+        // ✅ 2.1) Inbox yayınla - sohbet listesi/unread güncellemek için (kritik)
+        // recipient sohbeti açmamış olsa bile chat sayfası açıkken bunu alacak
+        messagingTemplate.convertAndSend(
+                "/topic/users/" + saved.getRecipientId(),
+                payload
+        );
+
+        // ✅ 2.2) (Önerilir) sender inbox’a da gönder
+        // kullanıcı başka tab/cihazda chat ekranında ise listesi güncel kalsın
+        messagingTemplate.convertAndSend(
+                "/topic/users/" + saved.getSenderId(),
                 payload
         );
 
@@ -72,6 +87,8 @@ public class ChatService {
                 + " sender=" + saved.getSenderId()
                 + " recipient=" + saved.getRecipientId()
                 + " content=" + saved.getContent());
+
         return payload;
     }
+
 }
