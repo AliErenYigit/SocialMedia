@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Java
 *.class
 *.jar
@@ -42,10 +43,3 @@ out/
 # Eclipse bin output (varsa)
 bin/
 **/bin/
-
-# Uploads (runtime files)
-uploads/
-**/uploads/
-
-social-frontend/node_modules/
-social-frontend/dist/
