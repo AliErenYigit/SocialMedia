@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="102f3872-e92e-44a0-841f-e7406c65117f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/social-frontend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/social-frontend/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend/.idea/compiler.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend/.idea/encodings.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend/.idea/jarRepositories.xml" beforeDir="false" />
@@ -177,42 +177,7 @@
       <change beforePath="$PROJECT_DIR$/social-frontend/backend/user-service/src/main/java/com/alieren/user/users/dto/UserSummaryResponse.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend/backend/user-service/src/main/resources/application.properties" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend/backend/user-service/src/test/java/com/alieren/user/UserServiceApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/eslint.config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/public/vite.svg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/social-frontend/social-frontend" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/App.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/App.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/api/auth.api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/api/chat.api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/api/http.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/api/image.api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/api/notification.api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/api/posts.api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/api/user.api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/app/AppLayout.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/app/ProtectedRoute.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/app/router.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/assets/react.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/components/FollowingUserItem.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/components/NotificationBell.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/components/NotificationsWidget.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/components/PostCard.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/components/Sidebar.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/index.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/main.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/ChatPage.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/Home.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/Login.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/Notification.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/PostDetail.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/Profile.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/pages/Register.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/store/auth.store.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/src/utils/jwt.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/social-frontend/vite.config.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
