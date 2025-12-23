@@ -58,6 +58,7 @@ export default function PostCard({ post, onLike, onOpen }) {
               maxHeight: 320,
               objectFit: "cover",
               display: "block",
+              
             }}>
           <Typography.Text style={{ fontSize: 17 }}>
             {post.content}

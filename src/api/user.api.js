@@ -13,6 +13,6 @@ export const userApi = {
   followerCount: (userId) => http.get(`/users/${userId}/followers-count`),
 
   followingCount: (userId) => http.get(`/users/${userId}/following-count`),
-  follow: (username) => http.post(`/users/${username}/follow`), // POST /api/v1/users/:username/follow
-  unfollow: (username) => http.post(`/users/${username}/unfollow`), // POST /api/v1/users/:username/unfollow
+ followById: (targetUserId) => http.post(`/users/${targetUserId}/follow`),
+  unfollowById: (targetUserId) => http.delete(`/users/${targetUserId}/follow`),
 };

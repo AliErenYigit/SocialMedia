@@ -12,6 +12,7 @@ import {
 import { BellOutlined, ReloadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { notificationsApi } from "../api/notification.api";
+import { chatApi } from "../api/chat.api"; // ✅ EKLENDİ
 
 const renderMessage = (n) => {
   const actor = n.username ?? "User";
@@ -63,7 +64,6 @@ export default function NotificationBell() {
   };
 
   useEffect(() => {
-    // ilk açılışta hazır olsun
     load();
   }, []);
 
@@ -72,6 +72,48 @@ export default function NotificationBell() {
     [items]
   );
   const top = items.slice(0, 6);
+
+  // ✅ Type'a göre yönlendirme (MESSAGE için conversation bul/oluştur)
+  const goByNotification = async (n) => {
+    const type = (n.type || "").toUpperCase();
+
+    // Post bildirimleri
+    if (type === "POST_LIKED" || type === "COMMENT_CREATED") {
+      if (n.entityId) return navigate(`/posts/${n.entityId}`);
+      return navigate("/notifications");
+    }
+
+    // Follow bildirimi (profil sayfanın path'i neyse ona göre değiştir)
+    if (type === "FOLLOW_CREATED") {
+      if (n.actorUserId) return navigate(`/profile/${n.actorUserId}`);
+      return navigate("/notifications");
+    }
+
+    // ✅ Mesaj bildirimi -> conversation bul/oluştur -> chat sayfası
+    if (type === "MESSAGE_CREATED") {
+      const recipientId = n.actorUserId; // mesajı atan kişi
+      if (!recipientId) return navigate("/notifications");
+
+      try {
+        const data = await chatApi.findOrCreateConversation(recipientId);
+        const conversationId = data?.conversationId ?? data?.id;
+        if (!conversationId) {
+          message.error("Sohbet bulunamadı/oluşturulamadı");
+          return navigate("/notifications");
+        }
+
+        // ✅ Chat sayfanın route'u burada:
+        return navigate(`/chat/${conversationId}`);
+        // örn eğer sende /messages/:id ise:
+        // return navigate(`/messages/${conversationId}`);
+      } catch (e) {
+        message.error(e?.response?.data?.message || "Sohbet açılırken hata oluştu");
+        return navigate("/notifications");
+      }
+    }
+
+    return navigate("/notifications");
+  };
 
   const content = (
     <div style={{ width: 360 }}>
@@ -105,78 +147,68 @@ export default function NotificationBell() {
         locale={{ emptyText: "Bildirim yok" }}
         renderItem={(n) => {
           const isUnread = !n.read;
+
           return (
             <List.Item style={{ padding: 0, border: 0 }}>
               <div
                 onClick={async () => {
                   try {
-                    // ✅ önce okundu yap (sadece okunmamışsa)
                     if (!n.read) {
                       await notificationsApi.markRead(n.id);
-
-                      // ✅ local state güncelle (badge düşsün)
                       setItems((prev) =>
-                        prev.map((x) =>
-                          x.id === n.id ? { ...x, read: true } : x
-                        )
+                        prev.map((x) => (x.id === n.id ? { ...x, read: true } : x))
                       );
                     }
                   } catch (e) {
                     message.error(
                       e?.response?.data?.message || "Okundu işaretlenemedi"
                     );
-                    // hata olsa bile yönlendirelim mi? (ben yönlendiriyorum)
                   } finally {
                     setOpen(false);
-
-                    // ✅ sonra yönlendir
-                    if (n.entityId) navigate(`/posts/${n.entityId}`);
-                    else navigate("/notifications");
+                    await goByNotification(n); // ✅ type'a göre yönlendir
                   }
                 }}
-                        style={{
-          display: "flex",
-          gap: 12,
-          alignItems: "flex-start",
-          width: "100%",
-          padding: "10px 16px",
-          borderRadius: 12,
-          marginBottom: 15,
-          background: isUnread ? "rgba(22,119,255,0.08)" : "transparent",
-          border: isUnread
-            ? "1px solid rgba(22,119,255,0.18)"
-            : "1px solid rgba(0,0,0,0.06)",
-        }}
-      >
-        {/* ✅ AVATAR (şimdilik placeholder) */}
-        <div
-          style={{
-            width: 39,
-            height: 36,
-            borderRadius: "80%",
-            background: isUnread ? "rgba(22,119,255,0.2)" : "rgba(0,0,0,0.06)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: 700,
-            color: "#1677ff",
-            flexShrink: 0,
-          }}
-        >
-          {(n.username ?? "U").charAt(0).toUpperCase()}
-        </div>
+                style={{
+                  display: "flex",
+                  gap: 12,
+                  alignItems: "flex-start",
+                  width: "100%",
+                  padding: "10px 16px",
+                  borderRadius: 12,
+                  marginBottom: 15,
+                  background: isUnread ? "rgba(22,119,255,0.08)" : "transparent",
+                  border: isUnread
+                    ? "1px solid rgba(22,119,255,0.18)"
+                    : "1px solid rgba(0,0,0,0.06)",
+                  cursor: "pointer",
+                }}
+              >
+                <div
+                  style={{
+                    width: 39,
+                    height: 36,
+                    borderRadius: "80%",
+                    background: isUnread
+                      ? "rgba(22,119,255,0.2)"
+                      : "rgba(0,0,0,0.06)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: 700,
+                    color: "#1677ff",
+                    flexShrink: 0,
+                  }}
+                >
+                  {(n.username ?? "U").charAt(0).toUpperCase()}
+                </div>
 
-        {/* ✅ CONTENT */}
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 13 }}>
-            {renderMessage(n)}
-          </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13 }}>{renderMessage(n)}</div>
 
-          <div style={{ fontSize: 12, opacity: 0.9, marginTop: 5 }}>
-            {n.createdAt ? new Date(n.createdAt).toLocaleString() : ""}
-          </div>
-        </div>
-       
+                  <div style={{ fontSize: 12, opacity: 0.9, marginTop: 5 }}>
+                    {n.createdAt ? new Date(n.createdAt).toLocaleString() : ""}
+                  </div>
+                </div>
               </div>
             </List.Item>
           );
@@ -206,7 +238,7 @@ export default function NotificationBell() {
       open={open}
       onOpenChange={(v) => {
         setOpen(v);
-        if (v) load(); // açılınca tazele
+        if (v) load();
       }}
       placement="bottomRight"
     >

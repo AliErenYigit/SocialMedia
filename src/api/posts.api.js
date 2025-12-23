@@ -1,7 +1,10 @@
 import { http } from "./http";
 
 export const postsApi = {
-  list: (params) => http.get("/posts", { params }),          // GET /api/v1/posts
+  listMine: () => http.get("/posts/me"),                 // ✅ listmine endpointin
+  listByUser: (userId) => http.get(`/posts/users/${userId}`), // ✅ yeni endpoint
+
+  list: (params) => http.get("/posts/list", { params }),          // GET /api/v1/posts
   detail: (id) => http.get(`/posts/${id}`),                 // GET /api/v1/posts/:id
   create: (payload) => http.post("/posts", payload),        // POST /api/v1/posts
   like: (id) => http.post(`/posts/${id}/like`),             // POST /api/v1/posts/:id/like
