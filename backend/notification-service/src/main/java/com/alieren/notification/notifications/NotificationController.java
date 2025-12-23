@@ -19,6 +19,42 @@ public class NotificationController {
         this.userServiceClient=userServiceClient;
     }
 
+    private String linkTypeOf(String type) {
+        return switch (type) {
+            case "POST_LIKED", "COMMENT_CREATED" -> "POST";
+            case "FOLLOW_CREATED" -> "PROFILE";
+            case "MESSAGE_CREATED" -> "DM";
+            default -> "NOTIFICATIONS";
+        };
+    }
+
+    private String linkIdOf(Notification n) {
+        // POST: entityId postId
+        if ("POST_LIKED".equals(n.getType()) || "COMMENT_CREATED".equals(n.getType())) {
+            return n.getEntityId(); // postId
+        }
+
+        // FOLLOW: actorUserId ile profile'a gideriz
+        if ("FOLLOW_CREATED".equals(n.getType())) {
+            return n.getActorUserId(); // userId
+        }
+
+        // MESSAGE: burada iki seçenek var:
+        // ✅ En doğrusu: entityId = conversationId/chatId
+        // (Eğer event tarafında bunu set ediyorsan direkt n.getEntityId() yeter)
+        if ("MESSAGE_CREATED".equals(n.getType())) {
+            // 1) conversationId/chatId varsa entityId'den dön
+            if (n.getEntityId() != null && !n.getEntityId().isBlank()) {
+                return n.getEntityId();
+            }
+            // 2) yoksa DM user bazlı route için actorUserId dön (frontend bunu /messages/u/:id yapar)
+            return n.getActorUserId();
+        }
+
+        return null;
+    }
+
+
     private Long toLongOrNull(String s) {
         try {
             return (s == null || s.isBlank()) ? null : Long.parseLong(s);
@@ -61,19 +97,34 @@ public class NotificationController {
                 .map(n -> {
                     Long aid = toLongOrNull(n.getActorUserId());
                     String username = (aid == null) ? "User" : usernames.getOrDefault(aid, "User");
-                    String msg = buildMessage(n.getType(), username);
+
+                    // ✅ boşluk fix
+                    String msg = switch (n.getType()) {
+                        case "POST_LIKED" -> username + " senin postunu beğendi.";
+                        case "COMMENT_CREATED" -> username + " postuna yorum yaptı.";
+                        case "FOLLOW_CREATED" -> username + " seni takip etmeye başladı.";
+                        case "MESSAGE_CREATED" -> username + " sana bir mesaj yolladı.";
+                        default -> username + " bir işlem yaptı.";
+                    };
+
+                    String linkType = linkTypeOf(n.getType());
+                    String linkId = linkIdOf(n);
+
                     return new NotificationResponse(
                             n.getId(),
                             n.getType(),
                             n.getActorUserId(),
-                            username,                // ✅ actorUsername
-                            n.getEntityId(),              // ✅ sadece entityId (entityType yok)
+                            username,
+                            n.getEntityId(),
                             n.getCreatedAt(),
                             n.isRead(),
-                            msg
+                            msg,
+                            linkType,
+                            linkId
                     );
                 })
                 .toList();
+
     }
     @PatchMapping("/{id}/read")
     public void markRead(@RequestHeader("X-User-Id") String me, @PathVariable Long id) {

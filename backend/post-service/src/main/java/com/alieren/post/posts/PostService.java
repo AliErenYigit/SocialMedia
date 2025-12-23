@@ -78,6 +78,10 @@ public class PostService {
         List<Post> posts = repo.findByAuthUserIdOrderByCreatedAtDesc(authUserId);
         return mapWithCounts(posts);
     }
+    public List<PostResponse> listByUser(String userId) {
+        List<Post> posts = repo.findByAuthUserIdOrderByCreatedAtDesc(userId);
+        return mapWithCounts(posts);
+    }
 
     private List<PostResponse> mapWithCounts(List<Post> posts) {
         if (posts.isEmpty()) return List.of();
@@ -116,6 +120,8 @@ public class PostService {
         List<Post> posts = repo.findByAuthUserIdInOrderByCreatedAtDesc(followingIds);
         return mapWithCounts(posts); // senin yazdığımız count’lu mapper
     }
+
+
 
     private Long toLongOrNull(String s) {
         try {

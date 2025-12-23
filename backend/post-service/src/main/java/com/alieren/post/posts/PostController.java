@@ -29,7 +29,7 @@ public class PostController {
         return service.create(me, content, file);
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public List<PostResponse> listAll() {
         return service.listAll();
     }
@@ -39,6 +39,10 @@ public class PostController {
         return service.listMine(userId);
     }
 
+    @GetMapping("/users/{userId}")
+    public List<PostResponse> listByUser(@PathVariable String userId) {
+        return service.listByUser(userId);
+    }
 
     @GetMapping("/feed")
     public java.util.List<com.alieren.post.posts.dto.PostResponse> feed(
@@ -46,6 +50,7 @@ public class PostController {
     ) {
         return service.feed(userId);
     }
+
     @GetMapping("/{id}")
     public PostDetailResponse detail(
             @PathVariable Long id,

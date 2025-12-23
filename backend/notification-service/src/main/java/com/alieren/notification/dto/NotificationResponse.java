@@ -10,5 +10,7 @@ public record NotificationResponse(
         String entityId,        // ✅ entityType kaldırmak için sadece entityId tut
         Instant createdAt,
         boolean read,
-        String message
+        String message,
+        String linkType,
+        String linkId
 ) {}

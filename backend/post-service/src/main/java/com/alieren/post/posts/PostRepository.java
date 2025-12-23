@@ -10,4 +10,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     long countByAuthUserId(String authUserId);
     // FEED: takip edilenlerin postları
     List<Post> findByAuthUserIdInOrderByCreatedAtDesc(List<String> authUserIds);
+
 }
