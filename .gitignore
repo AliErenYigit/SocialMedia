@@ -19,6 +19,11 @@ backend/.idea/
 .DS_Store
 Thumbs.db
 
+# Uploads (runtime files)
+uploads/
+**/uploads/
+
+
 # Logs
 *.log
 

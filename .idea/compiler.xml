@@ -10,6 +10,7 @@
         <module name="shared" />
         <module name="chat-service" />
         <module name="discovery-service" />
+        <module name="image-service" />
       </profile>
       <profile name="Annotation profile for post-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -47,6 +48,7 @@
       <module name="auth-service" options="-parameters" />
       <module name="chat-service" options="-parameters" />
       <module name="discovery-service" options="-parameters" />
+      <module name="image-service" options="-parameters" />
       <module name="notification-service" options="-parameters" />
       <module name="post-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
